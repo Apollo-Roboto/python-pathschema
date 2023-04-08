@@ -3,10 +3,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = ""
+name = "file-system-schema"
 version = "0.0.1"
 authors = [
-  { name="", email="" },
+  { name="Apollo-Roboto", email="Apollo_Roboto@outlook.com" },
 ]
 description  = ""
 readme = "README.md"
