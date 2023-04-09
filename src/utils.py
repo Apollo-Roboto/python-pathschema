@@ -1,4 +1,4 @@
-from fss import fssNode
+from fss import fssNode, fssFileNode, fssDirNode
 
 def print_node_tree(node: fssNode, depth = 0, is_last = False):
 
@@ -12,12 +12,16 @@ def print_node_tree(node: fssNode, depth = 0, is_last = False):
 		else:
 			decorator += '│  '
 
-	if(node.is_dir):
+	if(isinstance(node, fssDirNode)):
 		decorator += '📁 '
+		print(decorator + node.name + '/')
 	else:
 		decorator += '📄 '
+		print(decorator + node.name)
 
-	print(decorator + node.name)
+	if(isinstance(node, fssFileNode)):
+		return
+	
 	for i, child in enumerate(node.childs):
 		print_node_tree(
 			child,

@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from fss import fssNode
+from fss import fssNode, fssDirNode, fssFileNode, Parser
 from utils import print_node_tree
 
 logging.basicConfig(
@@ -15,42 +15,21 @@ log = logging.getLogger(__name__)
 
 def main():
 
-	sample_schema = """
-	Assets/
-		Globals/
-			Materials/
-			Textures/
-			Models/
-			Scripts/
-			Animations/
-		Prefabs/
-			Object1/
-				Materials/
-				Textures/
-				Models/
-				Scripts/
-				Animations/
-			Object2/
-		CommunityAssets/
-		Scenes/
-	"""
+	schema =  'Assets/\n'
+	schema += '\tGlobals/\n'
+	schema += '\t\tMaterials/\n'
+	schema += '\t\tTextures/\n'
+	schema += '\t\tModels/\n'
+	schema += '\t\tScripts/\n'
+	schema += '\t\tAnimations/\n'
+	schema += '\tPrefabs/\n'
+	schema += '\tNotes.md\n'
+	schema += '\tCommunityAssets/\n'
+	schema += '\tScenes/\n'
 
-	test_node_tree = fssNode(name='Assets/', childs=[
-		fssNode(name='Globals/', childs=[
-			fssNode(name='Materials/'),
-			fssNode(name='Textures/'),
-			fssNode(name='Models/'),
-			fssNode(name='Scripts/'),
-			fssNode(name='Animations/'),
-		]),
-		fssNode(name='Prefabs/'),
-		fssNode(name='Prefabs/'),
-		fssNode(name='CommunityAssets/'),
-		fssNode(name='Scenes/'),
-	])
-
-	print_node_tree(test_node_tree)
+	parsed_tree =  Parser().schema_to_node_tree(schema)
 	
+	print_node_tree(parsed_tree)
 
 if __name__ == '__main__':
 	main()
