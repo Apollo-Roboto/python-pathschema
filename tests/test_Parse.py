@@ -1,10 +1,13 @@
 import unittest
-from src.fss import Parser, fssDirNode, fssFileNode, SchemaException, fssNode
+from src.fss import fssDirNode, fssFileNode, fssNode
+from src.Parser import Parser
+from src.exceptions import SchemaException
 import tempfile
 import uuid
 from pathlib import Path
 import os
 import shutil
+
 
 
 class TestParse(unittest.TestCase):
@@ -54,9 +57,9 @@ class TestParse(unittest.TestCase):
 		self.assertEqual(expected_tree, returned_tree)
 
 	def test_schema_to_note_tree_file_with_child_exception(self):
-		schema =  'Assets/'
-		schema += '\tfile.txt'
-		schema += '\t\toh_no.txt'
+		schema =  'Assets/\n'
+		schema += '\tfile.txt\n'
+		schema += '\t\toh_no.txt\n'
 
 		with self.assertRaises(SchemaException):
 			Parser().schema_to_node_tree(schema)
