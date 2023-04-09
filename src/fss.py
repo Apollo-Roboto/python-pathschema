@@ -1,24 +1,32 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Union, Optional
 from pathlib import Path
 
-sample_schema = """
-root/
-	text.exe
-	a_file.txt
-	a_directory/
-"""
+illegalCharacters = ['\\', '?', '%', '*', ':', '|', '"', '<', '>', '']
+# dot '.' is not allowed at the end of a directory
 
 def validate(path: Union[str, Path], schema: str):
 	if(isinstance(path, str)):
 		path = Path(path)
 
+
 @dataclass
-class fssFile:
+class fssNode:
 	name: str
-	parent: Optional['fssFile']
-	childs: list['fssFile']
+	parent: Optional['fssNode'] = None
+	childs: list['fssNode'] = field(default_factory=list)
 
 	@property
 	def is_dir(self):
 		return self.name.endswith('/')
+	
+	@property
+	def is_file(self):
+		return not self.name.endswith('/')
+	
+	def validate_name(self):
+		for i, character in enumerate(self.name):
+			if character in illegalCharacters:
+				return False
+		
+		return True
