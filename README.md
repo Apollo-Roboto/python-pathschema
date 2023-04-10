@@ -1,5 +1,4 @@
-# Template Python
-Python project template
+# File System Schema
 
 # How to use
 
@@ -8,6 +7,14 @@ import fss
 
 schema = "root/"
 
-fss.validate('./path', schema)
+path_to_validate = './path'
+
+try:
+	fss.validate(path_to_validate, schema)
+	print('Valid :)')
+except:
+	print('Invalid :(')
+```
+
 
 ```
