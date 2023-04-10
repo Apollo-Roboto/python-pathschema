@@ -1,7 +1,7 @@
 import unittest
-from src.fss import fssDirNode, fssFileNode, fssNode
-from src.Parser import Parser
-from src.exceptions import SchemaException
+from fss.fss import fssDirNode, fssFileNode, fssNode
+from fss.Parser import Parser
+from fss.exceptions import SchemaError
 import tempfile
 import uuid
 from pathlib import Path
@@ -61,5 +61,5 @@ class TestParse(unittest.TestCase):
 		schema += '\tfile.txt\n'
 		schema += '\t\toh_no.txt\n'
 
-		with self.assertRaises(SchemaException):
+		with self.assertRaises(SchemaError):
 			Parser().schema_to_node_tree(schema)

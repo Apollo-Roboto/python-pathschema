@@ -1,5 +1,5 @@
-from src.fss import fssDirNode, fssFileNode, fssNode
-from src.exceptions import SchemaException
+from fss.fss import fssDirNode, fssFileNode, fssNode
+from fss.exceptions import SchemaError
 
 
 
@@ -57,7 +57,7 @@ class Parser():
 				node_depth += 1
 
 				if(isinstance(current_node, fssFileNode)):
-					raise SchemaException(f'Files cannot have childs. At line {line_num + 1}')
+					raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
 
 				if(name.endswith('/')):
 					node = fssDirNode(

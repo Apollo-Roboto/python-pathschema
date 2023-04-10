@@ -1,20 +1,39 @@
 from dataclasses import dataclass, field
 from typing import Union, Optional
 from pathlib import Path
+import re
 
 illegalCharacters = ['\\', '/', '?', '*', ':', '|', '"', '<', '>']
 # dot '.' is not allowed at the end of a directory
-
-def validate(path: Union[str, Path], schema: str):
-	if(isinstance(path, str)):
-		path = Path(path)
-	
-	raise NotImplementedError('Validate is not implemented')
 
 @dataclass
 class fssNode:
 	name: str
 	parent: Optional['fssNode'] = None
+
+	@property
+	def is_regex(self) -> bool:
+		return \
+			self.name.startswith('"') and \
+			self.name.endswith('"')
+
+	@property
+	def is_match_all(self) -> bool:
+		return self.name == '*'
+
+	def validate_against(self, name: str) -> bool:
+		"""Validate a given name against this node's name"""
+
+		if(self.is_match_all):
+			return True
+		
+		if(self.is_regex):
+			regex = self.name.removeprefix('"').removesuffix('"')
+			match = re.fullmatch(regex, name)
+			
+			return match != None
+		
+		return self.name == name
 
 	def __eq__(self, __value: object) -> bool:
 		return \
