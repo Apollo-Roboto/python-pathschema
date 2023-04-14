@@ -1,10 +1,11 @@
 import unittest
-from fss.fss import fssNode
+from fss.fss import fssNode, fssDirNode
 import tempfile
 import uuid
 from pathlib import Path
 import os
 import shutil
+import random
 
 class TestFssNode(unittest.TestCase):
 
@@ -54,3 +55,31 @@ class TestFssNode(unittest.TestCase):
 		for node_name, name in params:
 			node = fssNode(name=node_name)
 			self.assertTrue(node.validate_against(name), f'{node_name} did not validate against {name}')
+
+	def test_get_child_by_name_present_pass(self):
+		node = fssDirNode(name='schema_root')
+		expected_node = fssNode(name='findme', parent=node)
+
+		node.childs.append(fssNode(name='node1', parent=node))
+		node.childs.append(fssNode(name='node2', parent=node))
+		node.childs.append(fssNode(name='node3', parent=node))
+		node.childs.append(expected_node)
+		node.childs.append(fssNode(name='node4', parent=node))
+		node.childs.append(fssNode(name='node5', parent=node))
+		
+		returned_node = node.get_child_by_name('findme')
+
+		self.assertEqual(returned_node, expected_node)
+
+	def test_get_child_by_name_missing_pass(self):
+		node = fssDirNode(name='schema_root')
+
+		node.childs.append(fssNode(name='node1', parent=node))
+		node.childs.append(fssNode(name='node2', parent=node))
+		node.childs.append(fssNode(name='node3', parent=node))
+		node.childs.append(fssNode(name='node4', parent=node))
+		node.childs.append(fssNode(name='node5', parent=node))
+		
+		returned_node = node.get_child_by_name('findme')
+
+		self.assertIsNone(returned_node)

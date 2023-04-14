@@ -22,7 +22,13 @@ class fssNode:
 		return self.name == '*'
 
 	def validate_against(self, name: str) -> bool:
-		"""Validate a given name against this node's name"""
+		"""
+		Validate a given name against this node's name
+		A validation is successful if
+			The given name is a direct match to the node
+			The given matches the regex
+			The node is a match all `*`
+		"""
 
 		if(self.is_match_all):
 			return True
@@ -41,6 +47,12 @@ class fssNode:
 			self.name == __value.name and \
 			self.parent == __value.parent
 
+	def __str__(self) -> str:
+		return f'node:{self.name}'
+	
+	def __repr__(self) -> str:
+		return f'node:{self.name}'
+
 @dataclass
 class fssDirNode(fssNode):
 	childs: list['fssNode'] = field(default_factory=list)
@@ -56,6 +68,19 @@ class fssDirNode(fssNode):
 		self.childs.append(node)
 		return self
 
+	def get_child_by_name(self, name) -> Optional['fssNode']:
+		for node in self.childs:
+			if node.name == name:
+				return node
+
+		return None
+	
+	def __str__(self) -> str:
+		return f'node:📁{self.name}/'
+	
+	def __repr__(self) -> str:
+		return f'node:📁{self.name}/'
+
 @dataclass
 class fssFileNode(fssNode):
 	def __eq__(self, __value: object) -> bool:
@@ -63,3 +88,9 @@ class fssFileNode(fssNode):
 			isinstance(__value, fssFileNode) and \
 			self.name == __value.name and \
 			self.parent == __value.parent
+
+	def __str__(self) -> str:
+		return f'node:📄{self.name}'
+	
+	def __repr__(self) -> str:
+		return f'node:📄{self.name}'
