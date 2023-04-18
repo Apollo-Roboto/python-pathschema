@@ -29,7 +29,6 @@ class Validator():
 
 		print_node_tree(schema_node_tree, sort=True)
 
-		# valid = self._recursive_validation(path, schema_node_tree)
 		valid = self._validation_helper(path, schema_node_tree)
 		if(not valid):
 			raise ValidationError('The directory was not valid')
@@ -48,7 +47,7 @@ class Validator():
 			for name in os.listdir(current_path):
 				path = current_path / name
 
-				matching_node = current_node.get_child_by_name(name)
+				matching_node = current_node.get_matching_child(name)
 
 				valid = self._validation_helper(path, matching_node)
 				if(not valid):

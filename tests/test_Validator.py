@@ -159,3 +159,76 @@ class TestValidator(unittest.TestCase):
 		with self.assertRaises(ValidationError) as e:
 			Validator().validate(dir_to_validate, schema)
 		# self.assertEqual(str(e.exception), '')
+
+	def test_validate_star_file_pass(self):
+		schema =  'Notes/\n'
+		schema += '\t*\n'
+
+		dir_to_validate = self._temp_dir()
+
+		note_dir = dir_to_validate.joinpath('Notes')
+		os.makedirs(note_dir)
+		with open(note_dir / 'robot.md', 'w') as f: pass
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_regex_file_pass(self):
+		schema =  'Notes/\n'
+		schema += '\t".*\\.md"\n'
+
+		dir_to_validate = self._temp_dir()
+
+		note_dir = dir_to_validate.joinpath('Notes')
+		os.makedirs(note_dir)
+		with open(note_dir / 'robot.md', 'w') as f: pass
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_regex_file_fail(self):
+		schema =  'Notes/\n'
+		schema += '\t".*\\.txt"\n'
+
+		dir_to_validate = self._temp_dir()
+
+		note_dir = dir_to_validate.joinpath('Notes')
+		os.makedirs(note_dir)
+		with open(note_dir / 'robot.md', 'w') as f: pass
+
+		with self.assertRaises(ValidationError) as e:
+			Validator().validate(dir_to_validate, schema)
+		# self.assertEqual(str(e.exception), '')
+
+	def test_validate_star_dir_pass(self):
+		schema =  'Notes/\n'
+		schema += '\t*/\n'
+
+		dir_to_validate = self._temp_dir()
+
+		dirs = dir_to_validate.joinpath('Notes', 'Things')
+		os.makedirs(dirs)
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_regex_dir_pass(self):
+		schema =  'Notes/\n'
+		schema += '\t"\\d+"/\n'
+
+		dir_to_validate = self._temp_dir()
+
+		dirs = dir_to_validate.joinpath('Notes', '123456')
+		os.makedirs(dirs)
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_regex_dir_fail(self):
+		schema =  'Notes/\n'
+		schema += '\t"\\d"/\n'
+
+		dir_to_validate = self._temp_dir()
+
+		dirs = dir_to_validate.joinpath('Notes', 'abcde')
+		os.makedirs(dirs)
+
+		with self.assertRaises(ValidationError) as e:
+			Validator().validate(dir_to_validate, schema)
+		# self.assertEqual(str(e.exception), '')

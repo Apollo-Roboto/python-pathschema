@@ -83,6 +83,13 @@ class fssDirNode(fssNode):
 				return node
 
 		return None
+	
+	def get_matching_child(self, name) -> Optional['fssNode']:
+		for node in self.childs:
+			if node.validate_against(name):
+				return node
+
+		return None
 
 	def __str__(self) -> str:
 		return f'node:📁{self.name}/(childs:{len(self.childs)})'

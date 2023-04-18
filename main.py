@@ -3,7 +3,7 @@ import sys
 
 from fss.fss import fssNode, fssDirNode, fssFileNode
 from fss.Parser import Parser
-from fss.Validator import validate
+from fss.Validator import Validator
 from fss.exceptions import ValidationError
 from fss.utils import print_node_tree
 
@@ -22,6 +22,7 @@ def main():
 	schema += '\tGlobals/\n'
 	schema += '\t\tMaterials/\n'
 	schema += '\t\tTextures/\n'
+	schema += '\t\t\t*\n'
 	schema += '\t\tModels/\n'
 	schema += '\t\tScripts/\n'
 	schema += '\t\tAnimations/\n'
@@ -35,7 +36,7 @@ def main():
 	# print_node_tree(parsed_tree)
 
 	try:
-		validate('./test_directory', schema)
+		Validator().validate('./test_directory', schema)
 		print('valid')
 	except ValidationError as e:
 		print('invalid')
