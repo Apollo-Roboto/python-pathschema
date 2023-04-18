@@ -35,60 +35,41 @@ class Parser():
 
 			# add node
 			if(indentation == node_depth):
-
-				if(name.endswith('/')):
-					node = fssDirNode(
-						name=name.removesuffix('/'),
-						parent=current_node,
-					)
-					current_node.childs.append(node)
-				else:
-					node = fssFileNode(
-						name=name,
-						parent=current_node,
-					)
-					current_node.childs.append(node)
+				pass
 
 			# dive in
 			elif(indentation > node_depth):
 		
-				if(len(current_node.childs) != 0):
+				if(isinstance(current_node, fssDirNode) and len(current_node.childs) != 0):
 					current_node = current_node.childs[-1]
 				node_depth += 1
-
-				if(isinstance(current_node, fssFileNode)):
-					raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
-
-				if(name.endswith('/')):
-					node = fssDirNode(
-						name=name.removesuffix('/'),
-						parent=current_node,
-					)
-					current_node.childs.append(node)
-				else:
-					node = fssFileNode(
-						name=name,
-						parent=current_node,
-					)
-					current_node.childs.append(node)
 
 			# back out
 			else:
 				while(indentation < node_depth):
-					current_node = current_node.parent
+					if(current_node != None):
+						current_node = current_node.parent
+					else:
+						raise Exception('Unexpected None value')
 					node_depth -= 1
 
-				if(name.endswith('/')):
-					node = fssDirNode(
-						name=name.removesuffix('/'),
-						parent=current_node,
-					)
+			if(name.endswith('/')):
+				node = fssDirNode(
+					name=name.removesuffix('/'),
+					parent=current_node,
+				)
+				if(isinstance(current_node, fssDirNode)):
 					current_node.childs.append(node)
 				else:
-					node = fssFileNode(
-						name=name,
-						parent=current_node,
-					)
+					raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
+			else:
+				node = fssFileNode(
+					name=name,
+					parent=current_node,
+				)
+				if(isinstance(current_node, fssDirNode)):
 					current_node.childs.append(node)
+				else:
+					raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
 
 		return root_node

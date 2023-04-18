@@ -122,9 +122,9 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_and_files_simple_pass(self):
 		schema =  'Textures/\n'
-		schema =  '\trobot.png\n'
-		schema =  'Models/\n'
-		schema =  '\trobot.fbx\n'
+		schema += '\trobot.png\n'
+		schema += 'Models/\n'
+		schema += '\trobot.fbx\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -140,9 +140,9 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_and_files_simple_fail(self):
 		schema =  'Textures/\n'
-		schema =  '\trobot.png\n'
-		schema =  'Models/\n'
-		schema =  '\trobot.fbx\n'
+		schema += '\trobot.png\n'
+		schema += 'Models/\n'
+		schema += '\trobot.fbx\n'
 
 		dir_to_validate = self._temp_dir()
 

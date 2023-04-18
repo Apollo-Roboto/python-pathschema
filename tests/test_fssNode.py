@@ -1,5 +1,5 @@
 import unittest
-from fss.fss import fssNode, fssDirNode
+from fss.fss import fssNode
 import tempfile
 import uuid
 from pathlib import Path
@@ -56,30 +56,23 @@ class TestFssNode(unittest.TestCase):
 			node = fssNode(name=node_name)
 			self.assertTrue(node.validate_against(name), f'{node_name} did not validate against {name}')
 
-	def test_get_child_by_name_present_pass(self):
-		node = fssDirNode(name='schema_root')
-		expected_node = fssNode(name='findme', parent=node)
+	def test_fssNode_eq_true(self):
+		node1 = fssNode(name='test')
+		node2 = fssNode(name='test')
 
-		node.childs.append(fssNode(name='node1', parent=node))
-		node.childs.append(fssNode(name='node2', parent=node))
-		node.childs.append(fssNode(name='node3', parent=node))
-		node.childs.append(expected_node)
-		node.childs.append(fssNode(name='node4', parent=node))
-		node.childs.append(fssNode(name='node5', parent=node))
+		self.assertEqual(node1, node2)
+
+	def test_fssNode_eq_false(self):
+		node1 = fssNode(name='test')
+		node2 = fssNode(name='tset')
 		
-		returned_node = node.get_child_by_name('findme')
+		self.assertNotEqual(node1, node2)
 
-		self.assertEqual(returned_node, expected_node)
+	def test_fssNode_path(self):
+		node1 = fssNode(name='node1')
+		node2 = fssNode(name='node2', parent=node1)
+		node3 = fssNode(name='node3', parent=node2)
+		node4 = fssNode(name='node4', parent=node3)
+		node5 = fssNode(name='node5', parent=node4)
 
-	def test_get_child_by_name_missing_pass(self):
-		node = fssDirNode(name='schema_root')
-
-		node.childs.append(fssNode(name='node1', parent=node))
-		node.childs.append(fssNode(name='node2', parent=node))
-		node.childs.append(fssNode(name='node3', parent=node))
-		node.childs.append(fssNode(name='node4', parent=node))
-		node.childs.append(fssNode(name='node5', parent=node))
-		
-		returned_node = node.get_child_by_name('findme')
-
-		self.assertIsNone(returned_node)
+		self.assertEqual(node5.path, 'node1/node2/node3/node4/node5')

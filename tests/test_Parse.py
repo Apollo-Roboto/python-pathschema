@@ -1,6 +1,7 @@
 import unittest
 from fss.fss import fssDirNode, fssFileNode, fssNode
 from fss.Parser import Parser
+from fss.utils import print_node_tree
 from fss.exceptions import SchemaError
 import tempfile
 import uuid
@@ -11,6 +12,14 @@ import shutil
 
 
 class TestParse(unittest.TestCase):
+
+	def setUp(self) -> None:
+		"""Adds a little newline to read the output better"""
+		print()
+
+	def tearDown(self) -> None:
+		"""Adds a little newline to read the output better"""
+		print()
 	
 	def test_schema_to_node_tree_simple_dir_pass(self):
 		schema = 'Assets/'
@@ -26,7 +35,7 @@ class TestParse(unittest.TestCase):
 		
 		self.assertIn(fssFileNode(name='picture.png', parent=root_node), root_node.childs)
 
-	def test_schema_to_node_tree_complex_pass(self):
+	def test_schema_to_node_tree_complex_dir_pass(self):
 		schema =  'Assets/\n'
 		schema += '\tGlobals/\n'
 		schema += '\t\tMaterials/\n'
@@ -56,10 +65,32 @@ class TestParse(unittest.TestCase):
 
 		self.assertEqual(expected_tree, returned_tree)
 
-	def test_schema_to_note_tree_file_with_child_exception(self):
+	def test_schema_to_node_tree_complex_dir_and_files_pass(self):
+		schema =  'Textures/\n'
+		schema +=  '\trobot.png\n'
+		schema +=  'Models/\n'
+		schema +=  '\trobot.fbx\n'
+
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = fssDirNode(name='schema_root') \
+			.add_child(fssDirNode(name='Textures')
+				.add_child(fssFileNode(name='robot.png'))
+			) \
+			.add_child(fssDirNode(name='Models')
+				.add_child(fssFileNode(name='robot.fbx'))
+			)
+		
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+		
+		self.assertEqual(expected_tree, returned_tree)
+
+	def test_schema_to_node_tree_file_with_child_exception(self):
 		schema =  'Assets/\n'
 		schema += '\tfile.txt\n'
 		schema += '\t\toh_no.txt\n'
 
-		with self.assertRaises(SchemaError):
+		with self.assertRaises(SchemaError) as e:
 			Parser().schema_to_node_tree(schema)
+		self.assertRegex(str(e.exception), r'Files cannot have childs. At line \d+')

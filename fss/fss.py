@@ -13,13 +13,20 @@ class fssNode:
 
 	@property
 	def is_regex(self) -> bool:
-		return \
-			self.name.startswith('"') and \
+		return (
+			self.name.startswith('"') and
 			self.name.endswith('"')
+		)
 
 	@property
 	def is_match_all(self) -> bool:
 		return self.name == '*'
+	
+	@property
+	def path(self) -> str:
+		if self.parent == None:
+			return self.name
+		return self.parent.path + '/' + self.name
 
 	def validate_against(self, name: str) -> bool:
 		"""
@@ -41,11 +48,11 @@ class fssNode:
 		
 		return self.name == name
 
-	def __eq__(self, __value: object) -> bool:
-		return \
-			isinstance(__value, fssNode) and \
-			self.name == __value.name and \
-			self.parent == __value.parent
+	def __eq__(self, other: object) -> bool:
+		return (
+			isinstance(other, self.__class__) and
+			self.name == other.name
+		)
 
 	def __str__(self) -> str:
 		return f'node:{self.name}'
@@ -57,11 +64,13 @@ class fssNode:
 class fssDirNode(fssNode):
 	childs: list['fssNode'] = field(default_factory=list)
 
-	def __eq__(self, __value: object) -> bool:
-		return \
-			isinstance(__value, fssDirNode) and \
-			self.name == __value.name and \
-			self.parent == __value.parent
+	def __eq__(self, other: object) -> bool:
+		return (
+			isinstance(other, self.__class__) and
+			self.name == other.name and
+			len(self.childs) == len(other.childs) and
+			self.childs == other.childs
+		)
 
 	def add_child(self, node: fssNode) -> 'fssDirNode':
 		node.parent = self
@@ -74,20 +83,20 @@ class fssDirNode(fssNode):
 				return node
 
 		return None
-	
+
 	def __str__(self) -> str:
-		return f'node:📁{self.name}/'
+		return f'node:📁{self.name}/(childs:{len(self.childs)})'
 	
 	def __repr__(self) -> str:
-		return f'node:📁{self.name}/'
+		return f'node:📁{self.name}/(childs:{len(self.childs)})'
 
 @dataclass
 class fssFileNode(fssNode):
-	def __eq__(self, __value: object) -> bool:
-		return \
-			isinstance(__value, fssFileNode) and \
-			self.name == __value.name and \
-			self.parent == __value.parent
+	def __eq__(self, other: object) -> bool:
+		return (
+			isinstance(other, self.__class__) and
+			self.name == other.name
+		)
 
 	def __str__(self) -> str:
 		return f'node:📄{self.name}'
