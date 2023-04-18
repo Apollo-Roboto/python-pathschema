@@ -18,16 +18,14 @@ except:
 
 # Example Schema Definition
 
-|  Symbol | Description  |
-|:-------:|--------------|
-| `/` | Slashes at the end of the name marks this element as a folder |
-| `*` | Allows files with any name |
-| `*/` | Allows folder with any name |
-| `**/` | Allows any number of nested folders |
-| `"regex"` | Quotes adds regex validation to the file name |
-| `"regex"/` | Quotes with a slash adds regex validation to the folder name |
-| `...` | No more validation in this folder |
-| `[]` | Control the quantity of matching folders/files |
+|  Symbol | Description  | Implemented |
+|:-------:|--------------|:-----------:|
+| `/` | Slashes at the end of the name marks this element as a folder | x | 
+| `*` | Allows files with any name | x |
+| `*/` | Allows folder with any name | x |
+| `"regex"` | Quotes adds regex validation to the file name | x |
+| `"regex"/` | Quotes with a slash adds regex validation to the folder name | x |
+| `[]` | Control the quantity of matching folders/files |   |
 
 ```txt
 assets/
@@ -39,7 +37,6 @@ assets/
 		* [0-255]
 	...
 ```
-
 
 ## Must have an `assets` folder. Can contain any directory and any file
 ```txt
