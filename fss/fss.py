@@ -3,8 +3,7 @@ from typing import Union, Optional
 from pathlib import Path
 import re
 
-illegalCharacters = ['\\', '/', '?', '*', ':', '|', '"', '<', '>']
-# dot '.' is not allowed at the end of a directory
+
 
 @dataclass
 class fssNode:
@@ -110,3 +109,19 @@ class fssFileNode(fssNode):
 	
 	def __repr__(self) -> str:
 		return f'node:📄{self.name}'
+
+@dataclass
+class fssAnyNode(fssNode):
+	name: str = '...'
+
+	def validate_against(self, name: str) -> bool:
+		return True
+	
+	def __eq__(self, other: object) -> bool:
+		return isinstance(other, self.__class__)
+
+	def __str__(self) -> str:
+		return f'node:...'
+	
+	def __repr__(self) -> str:
+		return f'node:...'

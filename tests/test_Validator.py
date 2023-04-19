@@ -186,13 +186,13 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_regex_file_fail(self):
 		schema =  'Notes/\n'
-		schema += '\t".*\\.txt"\n'
+		schema += '\t".*\\.md"\n'
 
 		dir_to_validate = self._temp_dir()
 
 		note_dir = dir_to_validate.joinpath('Notes')
 		os.makedirs(note_dir)
-		with open(note_dir / 'robot.md', 'w') as f: pass
+		with open(note_dir / 'robot.txt', 'w') as f: pass
 
 		with self.assertRaises(ValidationError) as e:
 			Validator().validate(dir_to_validate, schema)
@@ -232,3 +232,67 @@ class TestValidator(unittest.TestCase):
 		with self.assertRaises(ValidationError) as e:
 			Validator().validate(dir_to_validate, schema)
 		# self.assertEqual(str(e.exception), '')
+
+	def test_validate_star_and_dir_pass(self):
+		schema =  'Assets/\n'
+		schema += '\tTextures/\n'
+		schema += '\t\t".*\\.png"\n'
+		schema += '\tModels/\n'
+		schema += '\t\t".*\\.fbx"\n'
+		schema += '\t*\n'
+
+		dir_to_validate = self._temp_dir()
+
+		assets_dir = dir_to_validate / 'Assets'
+		os.makedirs(assets_dir)
+		textures_dir = assets_dir / 'Textures'
+		os.makedirs(textures_dir)
+		models_dir = assets_dir / 'Models'
+		os.makedirs(models_dir)
+
+		with open(textures_dir / 'robot.png', 'w') as f: pass
+		with open(models_dir / 'robot.fbx', 'w') as f: pass
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_star_and_dir_fail(self):
+		schema =  'Assets/\n'
+		schema += '\tTextures/\n'
+		schema += '\t\t".*\\.png"\n'
+		schema += '\tModels/\n'
+		schema += '\t\t".*\\.fbx"\n'
+		schema += '\t*\n'
+
+		dir_to_validate = self._temp_dir()
+
+		assets_dir = dir_to_validate / 'Assets'
+		os.makedirs(assets_dir)
+		textures_dir = assets_dir / 'Textures'
+		os.makedirs(textures_dir)
+		models_dir = assets_dir / 'Models'
+		os.makedirs(models_dir)
+
+		with open(textures_dir / 'robot.jpg', 'w') as f: pass
+		with open(models_dir / 'robot.obj', 'w') as f: pass
+
+		with self.assertRaises(ValidationError) as e:
+			Validator().validate(dir_to_validate, schema)
+		# self.assertEqual(str(e.exception), '')
+
+	def test_validate_any_pass(self):
+		schema =  'Assets/\n'
+		schema += '\t...\n'
+
+		dir_to_validate = self._temp_dir()
+
+		assets_dir = dir_to_validate / 'Assets'
+		os.makedirs(assets_dir)
+		textures_dir = assets_dir / 'Textures'
+		os.makedirs(textures_dir)
+		models_dir = assets_dir / 'Models'
+		os.makedirs(models_dir)
+
+		with open(textures_dir / 'robot.png', 'w') as f: pass
+		with open(models_dir / 'robot.fbx', 'w') as f: pass
+
+		Validator().validate(dir_to_validate, schema)

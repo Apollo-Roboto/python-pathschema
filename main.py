@@ -18,22 +18,10 @@ log = logging.getLogger(__name__)
 
 def main():
 
-	schema =  'Assets/\n'
-	schema += '\tGlobals/\n'
-	schema += '\t\tMaterials/\n'
-	schema += '\t\tTextures/\n'
-	schema += '\t\t\t*\n'
-	schema += '\t\tModels/\n'
-	schema += '\t\tScripts/\n'
-	schema += '\t\tAnimations/\n'
-	schema += '\tPrefabs/\n'
-	schema += '\tNotes.md\n'
-	schema += '\tCommunityAssets/\n'
-	schema += '\tScenes/\n'
+	schema = ''
 
-	# parsed_tree =  Parser().schema_to_node_tree(schema)
-	
-	# print_node_tree(parsed_tree)
+	with open('./test_schema_1.txt', 'r') as f:
+		schema = f.read()
 
 	try:
 		Validator().validate('./test_directory', schema)

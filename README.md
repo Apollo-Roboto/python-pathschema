@@ -20,11 +20,12 @@ except:
 
 |  Symbol | Description  | Implemented |
 |:-------:|--------------|:-----------:|
-| `/` | Slashes at the end of the name marks this element as a folder | x | 
-| `*` | Allows files with any name | x |
-| `*/` | Allows folder with any name | x |
-| `"regex"` | Quotes adds regex validation to the file name | x |
-| `"regex"/` | Quotes with a slash adds regex validation to the folder name | x |
+| `/` | Slashes at the end of the name marks this element as a folder | X | 
+| `*` | Allows files with any name | X |
+| `*/` | Allows folder with any name | X |
+| `"regex"` | Quotes adds regex validation to the file name | X |
+| `"regex"/` | Quotes with a slash adds regex validation to the folder name | X |
+| `...` | Allows any (and nested) files and folder | X |
 | `[]` | Control the quantity of matching folders/files |   |
 
 ```txt
@@ -38,7 +39,7 @@ assets/
 	...
 ```
 
-## Must have an `assets` folder. Can contain any directory and any file
+## Any files and folder allowed in the `assets` folder
 ```txt
 assets/
 	...
