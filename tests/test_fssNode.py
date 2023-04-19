@@ -21,14 +21,6 @@ class TestFssNode(unittest.TestCase):
 		node = fssNode(name='test')
 		self.assertFalse(node.is_regex)
 
-	def test_is_match_all_true(self):
-		node = fssNode(name='*')
-		self.assertTrue(node.is_match_all)
-
-	def test_is_match_all_false(self):
-		node = fssNode(name='test')
-		self.assertFalse(node.is_match_all)
-
 	def test_validate_against_identical_pass(self):
 		params = ['test', 'name', 'document.txt']
 		for name in params:

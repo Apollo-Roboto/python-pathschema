@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Union, Optional
 from pathlib import Path
 import re
+import fnmatch
 
 
 
@@ -16,10 +17,6 @@ class fssNode:
 			self.name.startswith('"') and
 			self.name.endswith('"')
 		)
-
-	@property
-	def is_match_all(self) -> bool:
-		return self.name == '*'
 	
 	@property
 	def path(self) -> str:
@@ -35,9 +32,6 @@ class fssNode:
 			The given matches the regex
 			The node is a match all `*`
 		"""
-
-		if(self.is_match_all):
-			return True
 		
 		if(self.is_regex):
 			regex = self.name.removeprefix('"').removesuffix('"')
@@ -45,7 +39,7 @@ class fssNode:
 			
 			return match != None
 		
-		return self.name == name
+		return fnmatch.fnmatch(name, self.name)
 
 	def __eq__(self, other: object) -> bool:
 		return (
