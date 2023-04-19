@@ -1,5 +1,5 @@
 import unittest
-from fss.fss import fssDirNode, fssFileNode, fssNode
+from fss.fss import fssDirNode, fssFileNode, fssNode, fssAnyNode
 from fss.Parser import Parser
 from fss.utils import print_node_tree
 from fss.exceptions import SchemaError
@@ -94,3 +94,19 @@ class TestParse(unittest.TestCase):
 		with self.assertRaises(SchemaError) as e:
 			Parser().schema_to_node_tree(schema)
 		self.assertRegex(str(e.exception), r'Files cannot have childs. At line \d+')
+
+	def test_schema_to_node_tree_all_pass(self):
+		schema =  'Assets/\n'
+		schema += '\t...\n'
+
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = fssDirNode(name='schema_root') \
+			.add_child(fssDirNode(name='Assets')
+	      		.add_child(fssAnyNode())
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)

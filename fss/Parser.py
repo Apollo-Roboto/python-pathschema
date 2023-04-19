@@ -1,5 +1,8 @@
-from fss.fss import fssDirNode, fssFileNode, fssNode
+from fss.fss import fssDirNode, fssFileNode, fssNode, fssAnyNode
 from fss.exceptions import SchemaError
+
+illegalCharacters = ['\\', '/', '?', '*', ':', '|', '"', '<', '>']
+# dot '.' is not allowed at the end of a directory
 
 
 
@@ -53,23 +56,24 @@ class Parser():
 						raise Exception('Unexpected None value')
 					node_depth -= 1
 
-			if(name.endswith('/')):
+			if(name == '...'):
+				node = fssAnyNode()
+
+			elif(name.endswith('/')):
 				node = fssDirNode(
 					name=name.removesuffix('/'),
 					parent=current_node,
 				)
-				if(isinstance(current_node, fssDirNode)):
-					current_node.childs.append(node)
-				else:
-					raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
+
 			else:
 				node = fssFileNode(
 					name=name,
 					parent=current_node,
 				)
-				if(isinstance(current_node, fssDirNode)):
-					current_node.childs.append(node)
-				else:
-					raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
+
+			if(isinstance(current_node, fssDirNode)):
+				current_node.childs.append(node)
+			else:
+				raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
 
 		return root_node

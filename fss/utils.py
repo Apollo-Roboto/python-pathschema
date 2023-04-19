@@ -1,4 +1,4 @@
-from fss.fss import fssNode, fssFileNode, fssDirNode
+from fss.fss import fssNode, fssFileNode, fssDirNode, fssAnyNode
 
 def print_node_tree(node: fssNode, sort=False, _depth=0, _is_last=False, _floating=0):
 	"""
@@ -21,11 +21,14 @@ def print_node_tree(node: fssNode, sort=False, _depth=0, _is_last=False, _floati
 	if(isinstance(node, fssDirNode)):
 		decorator += '📁 '
 		print(decorator + node.name + '/')
-	else:
+	elif(isinstance(node, fssFileNode)):
 		decorator += '📄 '
 		print(decorator + node.name)
+	elif(isinstance(node, fssAnyNode)):
+		decorator += ''
+		print(decorator + node.name)
 
-	if(isinstance(node, fssFileNode)):
+	if(not isinstance(node, fssDirNode)):
 		return
 	
 	childs = node.childs
