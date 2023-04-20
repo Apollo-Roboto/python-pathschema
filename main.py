@@ -1,20 +1,7 @@
-import logging
-import sys
-
-from fss.fss import fssNode, fssDirNode, fssFileNode
-from fss.Parser import Parser
-from fss.Validator import Validator
+from fss.validator import Validator
 from fss.exceptions import ValidationError
-from fss.utils import print_node_tree
+import os
 
-logging.basicConfig(
-	stream=sys.stdout,
-	level=logging.INFO,
-	datefmt='%Y-%m-%d %H:%M:%S',
-	format='%(levelname)s [ %(asctime)s ] %(name)s : %(message)s',
-)
-
-log = logging.getLogger(__name__)
 
 def main():
 

@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 from typing import Optional
 
-from fss.Parser import Parser
+from fss.parser import Parser
 from fss.utils import print_node_tree
 from fss.fss import fssDirNode, fssFileNode, fssNode
 from fss.exceptions import ValidationError

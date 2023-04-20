@@ -1,11 +1,7 @@
 import unittest
 from fss.fss import fssNode
-import tempfile
-import uuid
-from pathlib import Path
-import os
-import shutil
-import random
+
+
 
 class TestFssNode(unittest.TestCase):
 
@@ -20,14 +16,6 @@ class TestFssNode(unittest.TestCase):
 	def test_is_regex_false(self):
 		node = fssNode(name='test')
 		self.assertFalse(node.is_regex)
-
-	def test_is_match_all_true(self):
-		node = fssNode(name='*')
-		self.assertTrue(node.is_match_all)
-
-	def test_is_match_all_false(self):
-		node = fssNode(name='test')
-		self.assertFalse(node.is_match_all)
 
 	def test_validate_against_identical_pass(self):
 		params = ['test', 'name', 'document.txt']

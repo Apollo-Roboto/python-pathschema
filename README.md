@@ -25,6 +25,8 @@ except:
 | `*/` | Allows folder with any name | X |
 | `"regex"` | Quotes adds regex validation to the file name | X |
 | `"regex"/` | Quotes with a slash adds regex validation to the folder name | X |
+| `*.ext` | Unix style pattern matching for files | X |
+| `*.ext/` | Unix style pattern matching for folders | X |
 | `...` | Allows any (and nested) files and folder | X |
 | `[]` | Control the quantity of matching folders/files |   |
 
@@ -45,8 +47,6 @@ assets/
 	...
 ```
 
-**`-> assets/**/*`**
-
 This structure would be valid.
 ```txt
 assets/
@@ -63,35 +63,6 @@ asset/
 	backgrounds/
 		bg_black.png
 		bg_white.png
-```
-
-## The `textures` folder can only have files that ends with`.png` or `.gif`.
-
-```txt
-assets/
-	textures/
-		**/
-			*.png
-			*.gif
-	...
-```
-
-**`-> assets/textures/**/*.png`**
-
-**`-> assets/textures/**/*.gif`**
-
-This structure would be valid.
-```txt
-textures/
-	robot.png
-	skybox.png
-	flames.gif
-```
-
-This structure would be invalid. *(not ending with .png or .gif)*
-```txt
-textures/
-	robot.fbx
 ```
 
 ## Can only have one depth of directory

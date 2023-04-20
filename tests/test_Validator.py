@@ -1,5 +1,5 @@
 import unittest
-from fss.Validator import Validator
+from fss.validator import Validator
 from fss.exceptions import ValidationError
 import tempfile
 import uuid
@@ -296,3 +296,72 @@ class TestValidator(unittest.TestCase):
 		with open(models_dir / 'robot.fbx', 'w') as f: pass
 
 		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_pattern_star_pass(self):
+		schema =  'Assets/\n'
+		schema += '\tTextures/\n'
+		schema += '\t\t*.png\n'
+
+		dir_to_validate = self._temp_dir()
+
+		assets_dir = dir_to_validate / 'Assets'
+		os.makedirs(assets_dir)
+		textures_dir = assets_dir / 'Textures'
+		os.makedirs(textures_dir)
+
+		with open(textures_dir / 'robot.png', 'w') as f: pass
+		with open(textures_dir / 'planet.png', 'w') as f: pass
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_pattern_star_fail(self):
+		schema =  'Assets/\n'
+		schema += '\tTextures/\n'
+		schema += '\t\t*.png\n'
+
+		dir_to_validate = self._temp_dir()
+
+		assets_dir = dir_to_validate / 'Assets'
+		os.makedirs(assets_dir)
+		textures_dir = assets_dir / 'Textures'
+		os.makedirs(textures_dir)
+
+		with open(textures_dir / 'robot.jpg', 'w') as f: pass
+		with open(textures_dir / 'planet.jpeg', 'w') as f: pass
+
+		with self.assertRaises(ValidationError) as e:
+			Validator().validate(dir_to_validate, schema)
+		# self.assertEqual(str(e.exception), '')
+
+	def test_validate_pattern_question_mark_pass(self):
+		schema =  'Folder/\n'
+		schema += '\tFile_?.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'File_0.txt', 'w') as f: pass
+		with open(folder_dir / 'File_1.txt', 'w') as f: pass
+		with open(folder_dir / 'File_2.txt', 'w') as f: pass
+		with open(folder_dir / 'File_A.txt', 'w') as f: pass
+		with open(folder_dir / 'File_B.txt', 'w') as f: pass
+		with open(folder_dir / 'File_C.txt', 'w') as f: pass
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_pattern_question_mark_fail(self):
+		schema =  'Folder/\n'
+		schema += '\tFile_?.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'Fails_00.txt', 'w') as f: pass
+
+		with self.assertRaises(ValidationError) as e:
+			Validator().validate(dir_to_validate, schema)
+		# self.assertEqual(str(e.exception), '')
