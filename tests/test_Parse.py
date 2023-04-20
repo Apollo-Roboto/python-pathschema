@@ -1,13 +1,8 @@
 import unittest
 from fss.fss import fssDirNode, fssFileNode, fssNode, fssAnyNode
-from fss.Parser import Parser
+from fss.parser import Parser
 from fss.utils import print_node_tree
 from fss.exceptions import SchemaError
-import tempfile
-import uuid
-from pathlib import Path
-import os
-import shutil
 
 
 

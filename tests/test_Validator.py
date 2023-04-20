@@ -1,5 +1,5 @@
 import unittest
-from fss.Validator import Validator
+from fss.validator import Validator
 from fss.exceptions import ValidationError
 import tempfile
 import uuid
@@ -297,7 +297,7 @@ class TestValidator(unittest.TestCase):
 
 		Validator().validate(dir_to_validate, schema)
 
-	def test_validate_pattern_pass(self):
+	def test_validate_pattern_star_pass(self):
 		schema =  'Assets/\n'
 		schema += '\tTextures/\n'
 		schema += '\t\t*.png\n'
@@ -314,7 +314,7 @@ class TestValidator(unittest.TestCase):
 
 		Validator().validate(dir_to_validate, schema)
 
-	def test_validate_pattern_fail(self):
+	def test_validate_pattern_star_fail(self):
 		schema =  'Assets/\n'
 		schema += '\tTextures/\n'
 		schema += '\t\t*.png\n'
@@ -328,6 +328,39 @@ class TestValidator(unittest.TestCase):
 
 		with open(textures_dir / 'robot.jpg', 'w') as f: pass
 		with open(textures_dir / 'planet.jpeg', 'w') as f: pass
+
+		with self.assertRaises(ValidationError) as e:
+			Validator().validate(dir_to_validate, schema)
+		# self.assertEqual(str(e.exception), '')
+
+	def test_validate_pattern_question_mark_pass(self):
+		schema =  'Folder/\n'
+		schema += '\tFile_?.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'File_0.txt', 'w') as f: pass
+		with open(folder_dir / 'File_1.txt', 'w') as f: pass
+		with open(folder_dir / 'File_2.txt', 'w') as f: pass
+		with open(folder_dir / 'File_A.txt', 'w') as f: pass
+		with open(folder_dir / 'File_B.txt', 'w') as f: pass
+		with open(folder_dir / 'File_C.txt', 'w') as f: pass
+
+		Validator().validate(dir_to_validate, schema)
+
+	def test_validate_pattern_question_mark_fail(self):
+		schema =  'Folder/\n'
+		schema += '\tFile_?.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'Fails_00.txt', 'w') as f: pass
 
 		with self.assertRaises(ValidationError) as e:
 			Validator().validate(dir_to_validate, schema)
