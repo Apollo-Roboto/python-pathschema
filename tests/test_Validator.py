@@ -78,16 +78,16 @@ class TestValidator(unittest.TestCase):
 
 		dir_to_validate = self._temp_dir()
 
-		os.makedirs(dir_to_validate.joinpath('Assets'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Materials'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Textures'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Models'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Scripts'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Animations'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Prefabs'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'CommunityAssets'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Scenes'))
+		os.makedirs(dir_to_validate / 'Assets')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Materials')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Textures')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Models')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Scripts')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Animations')
+		os.makedirs(dir_to_validate / 'Assets' / 'Prefabs')
+		os.makedirs(dir_to_validate / 'Assets' / 'CommunityAssets')
+		os.makedirs(dir_to_validate / 'Assets' / 'Scenes')
 
 		Validator().validate(dir_to_validate, schema)
 
@@ -105,16 +105,16 @@ class TestValidator(unittest.TestCase):
 
 		dir_to_validate = self._temp_dir()
 
-		os.makedirs(dir_to_validate.joinpath('Assets'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Wrong'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Textures'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Models'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Scripts'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Globals', 'Animations'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Prefabs'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Wrong'))
-		os.makedirs(dir_to_validate.joinpath('Assets', 'Scenes'))
+		os.makedirs(dir_to_validate / 'Assets')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Wrong')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Textures')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Models')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Scripts')
+		os.makedirs(dir_to_validate / 'Assets' / 'Globals' / 'Animations')
+		os.makedirs(dir_to_validate / 'Assets' / 'Prefabs')
+		os.makedirs(dir_to_validate / 'Assets' / 'Wrong')
+		os.makedirs(dir_to_validate / 'Assets' / 'Scenes')
 
 		with self.assertRaises(ValidationError) as e:
 			Validator().validate(dir_to_validate, schema)
