@@ -3,17 +3,17 @@
 # How to use
 
 ```python
-import fss
+from fss.validator import Validator
 
 schema = "root/"
 
 path_to_validate = './path'
 
-try:
-	fss.validate(path_to_validate, schema)
-	print('Valid :)')
-except:
-	print('Invalid :(')
+result = Validator().validate(path_to_validate, schema)
+if(result.has_error())
+	print('Invalid')
+else:
+	print('Valid')
 ```
 
 # Example Schema Definition
@@ -28,7 +28,9 @@ except:
 | `*.ext` | Unix style pattern matching for files | X |
 | `*.ext/` | Unix style pattern matching for folders | X |
 | `...` | Allows any (and nested) files and folder | X |
-| `[]` | Control the quantity of matching folders/files |   |
+| `<0-5>` | Control the quantity of matching folders/files |   |
+| `+` | Makes the file required |   |
+| `-` | Makes the file forbidden |   |
 
 ```txt
 assets/
@@ -39,6 +41,28 @@ assets/
 	models/
 		* [0-255]
 	...
+```
+
+## Only allows `.mp4` or `.flv` in the `videos` folder
+```txt
+videos/
+	*.mp4
+	*.flv
+```
+
+This structure would be valid.
+```txt
+videos/
+	robots.mp4
+	planets.flv
+	my-mix-tape.flv
+```
+
+This structure would be invalid. *(`.png` and `.jpg` is not allowed)*
+```txt
+videos/
+	office.png
+	robots.jpg
 ```
 
 ## Any files and folder allowed in the `assets` folder
@@ -71,8 +95,6 @@ asset/
 example/
 	*/
 ```
-
-**`-> assets/*/`**
 
 This structure would be valid.
 

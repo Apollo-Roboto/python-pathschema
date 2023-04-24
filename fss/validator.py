@@ -2,11 +2,11 @@ from typing import Union
 from pathlib import Path
 import os
 from typing import Optional
+from dataclasses import dataclass
 
 from fss.parser import Parser
 from fss.utils import print_node_tree
-from fss.fss import fssDirNode, fssFileNode, fssNode
-from fss.exceptions import ValidationError
+from fss.fss import fssDirNode, fssFileNode, fssNode, ValidationResult
 
 
 
@@ -15,7 +15,7 @@ class Validator():
 	def __init__(self):
 		pass
 
-	def validate(self, path: Union[str, Path], schema: str):
+	def validate(self, path: Union[str, Path], schema: str) -> ValidationResult:
 		if(isinstance(path, str)):
 			path = Path(path)
 
@@ -27,41 +27,43 @@ class Validator():
 
 		schema_node_tree = Parser().schema_to_node_tree(schema)
 
-		print_node_tree(schema_node_tree)
+		results = self._validation_helper(path.absolute(), schema_node_tree)
 
-		valid = self._validation_helper(path, schema_node_tree)
-		if(not valid):
-			raise ValidationError('The directory was not valid')
+		return results
 		
-	def _validation_helper(self, directory_to_validate: Path, node: Optional['fssNode']) -> bool:
+	def _validation_helper(self, directory_to_validate: Path, node: fssNode) -> ValidationResult:
 
 		current_node = node
 		current_path = directory_to_validate
 
-		if(isinstance(current_node, fssDirNode)):
-			
-			# mismatch: node is directory, path is file
-			if(current_path.is_file()):
-				return False
+		results = ValidationResult()
 
+		results.add_path(current_path)
+
+		# mismatch: node is directory, path is file
+		if(isinstance(current_node, fssDirNode) and not current_path.is_dir()):
+			results.add_error(current_path, 'Expected a directory')
+			return results
+
+		# mismatch: node is file, path is dir
+		if(isinstance(current_node, fssFileNode) and not current_path.is_file()):
+			results.add_error(current_path, 'Expected a file')
+			return results
+
+		if(isinstance(current_node, fssDirNode) and current_path.is_dir()):
 			for name in os.listdir(current_path):
 				path = current_path / name
 
+				results.add_path(path)
+
 				matching_node = current_node.get_matching_child(name)
 
-				valid = self._validation_helper(path, matching_node)
-				if(not valid):
-					return False
-			
-			return True
-		
-		elif(isinstance(current_node, fssFileNode)):
+				if(matching_node == None):
+					results.add_error(path, f'Not allowed')
+					continue
+				
+				sub_results = self._validation_helper(path, matching_node)
 
-			# mismatch: node is file, path is dir
-			if(current_path.is_dir()):
-				return False
-		
-		if(current_node == None):
-			return False
-		
-		return current_node.validate_against(current_path.name)
+				results.update(sub_results)
+				
+		return results

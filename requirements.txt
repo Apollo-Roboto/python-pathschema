@@ -3,3 +3,4 @@ jsonschema
 python-dotenv
 requests
 pylint
+colorama==0.4.6
