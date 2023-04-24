@@ -1,7 +1,7 @@
 Assets/
 	Globals/
 		Materials/
-			*.mat
+			"(solid|trans)_.+\.mat"
 		Textures/
 			*.png
 			*.gif
@@ -14,7 +14,7 @@ Assets/
 	Prefabs/
 		*/
 			Materials/
-				*.mat
+				"(solid|trans)_.+\.mat"
 			Textures/
 				*.png
 				*.gif

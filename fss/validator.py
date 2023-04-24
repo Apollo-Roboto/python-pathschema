@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from fss.parser import Parser
 from fss.utils import print_node_tree
-from fss.fss import fssDirNode, fssFileNode, fssNode
+from fss.fss import fssDirNode, fssFileNode, fssNode, ValidationResult
 from fss.exceptions import ValidationError
 
 
@@ -16,7 +16,7 @@ class Validator():
 	def __init__(self):
 		pass
 
-	def validate(self, path: Union[str, Path], schema: str) -> dict[Path, list[str]]:
+	def validate(self, path: Union[str, Path], schema: str) -> ValidationResult:
 		if(isinstance(path, str)):
 			path = Path(path)
 
@@ -28,44 +28,43 @@ class Validator():
 
 		schema_node_tree = Parser().schema_to_node_tree(schema)
 
-		errors = self._validation_helper(path.absolute(), schema_node_tree)
+		results = self._validation_helper(path.absolute(), schema_node_tree)
 
-		return errors
+		return results
 		
-	def _validation_helper(self, directory_to_validate: Path, node: fssNode) -> dict[Path, list[str]]:
+	def _validation_helper(self, directory_to_validate: Path, node: fssNode) -> ValidationResult:
 
 		current_node = node
 		current_path = directory_to_validate
 
-		errors_by_path: dict[Path, list[str]] = {}
+		results = ValidationResult()
 
-		errors_by_path[current_path] = errors_by_path.get(current_path, [])
+		results.add_path(current_path)
 
 		# mismatch: node is directory, path is file
 		if(isinstance(current_node, fssDirNode) and not current_path.is_dir()):
-			errors_by_path[current_path].append('Expected a directory')
-			return errors_by_path
+			results.add_error(current_path, 'Expected a directory')
+			return results
 
 		# mismatch: node is file, path is dir
 		if(isinstance(current_node, fssFileNode) and not current_path.is_file()):
-			errors_by_path[current_path].append('Expected a file')
-			return errors_by_path
+			results.add_error(current_path, 'Expected a file')
+			return results
 
 		if(isinstance(current_node, fssDirNode) and current_path.is_dir()):
-			
 			for name in os.listdir(current_path):
 				path = current_path / name
 
-				errors_by_path[path] = errors_by_path.get(path, [])
+				results.add_path(path)
 
 				matching_node = current_node.get_matching_child(name)
 
 				if(matching_node == None):
-					errors_by_path[path].append(f'Not allowed in {current_node.path}')
+					results.add_error(path, f'Not allowed')
 					continue
 				
-				sub_errors = self._validation_helper(path, matching_node)
+				sub_results = self._validation_helper(path, matching_node)
 
-				errors_by_path.update(sub_errors)
-
-		return errors_by_path
+				results.update(sub_results)
+				
+		return results

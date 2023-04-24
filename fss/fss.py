@@ -119,3 +119,32 @@ class fssAnyNode(fssNode):
 	
 	def __repr__(self) -> str:
 		return f'node:...'
+
+@dataclass
+class ValidationResult:
+	errors_by_path: dict[Path, list[str]] = field(default_factory=dict) 
+
+	def has_error(self):
+
+		for errors in self.errors_by_path.values():
+			if(len(errors) > 0):
+				return True
+
+		return False
+
+	def get_errors(self, path: Path) -> Optional[list[str]]:
+		return self.errors_by_path.get(path, None)
+
+	def add_error(self, path: Path, error: str):
+
+		# init value if doesn't exists
+		self.errors_by_path[path] = self.errors_by_path.get(path, [])
+
+		# add error to the path
+		self.errors_by_path[path].append(error)
+
+	def add_path(self, path):
+		self.errors_by_path[path] = self.errors_by_path.get(path, [])
+
+	def update(self, other: 'ValidationResult'):
+		self.errors_by_path.update(other.errors_by_path)
