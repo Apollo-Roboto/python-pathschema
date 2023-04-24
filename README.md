@@ -3,17 +3,17 @@
 # How to use
 
 ```python
-import fss
+from fss.validator import Validator
 
 schema = "root/"
 
 path_to_validate = './path'
 
-try:
-	fss.validate(path_to_validate, schema)
-	print('Valid :)')
-except:
-	print('Invalid :(')
+result = Validator().validate(path_to_validate, schema)
+if(result.has_error())
+	print('Invalid')
+else:
+	print('Valid')
 ```
 
 # Example Schema Definition
@@ -28,9 +28,9 @@ except:
 | `*.ext` | Unix style pattern matching for files | X |
 | `*.ext/` | Unix style pattern matching for folders | X |
 | `...` | Allows any (and nested) files and folder | X |
-| `<>` | Control the quantity of matching folders/files |   |
-| `:=` | Makes the file required |   |
-| `:!` | Makes the file forbidden |   |
+| `<0-5>` | Control the quantity of matching folders/files |   |
+| `+` | Makes the file required |   |
+| `-` | Makes the file forbidden |   |
 
 ```txt
 assets/

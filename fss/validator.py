@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from fss.parser import Parser
 from fss.utils import print_node_tree
 from fss.fss import fssDirNode, fssFileNode, fssNode, ValidationResult
-from fss.exceptions import ValidationError
 
 
 

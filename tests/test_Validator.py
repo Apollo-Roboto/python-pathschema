@@ -1,6 +1,5 @@
 import unittest
 from fss.validator import Validator
-from fss.exceptions import ValidationError
 import tempfile
 import uuid
 from pathlib import Path

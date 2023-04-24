@@ -1,8 +1,8 @@
 from fss.validator import Validator
-from fss.exceptions import ValidationError
 from fss.fss import ValidationResult
 import os
 from colorama import Fore, Back, Style
+
 
 
 def main():
@@ -12,11 +12,11 @@ def main():
 	with open('./test_schema.txt', 'r') as f:
 		schema = f.read()
 
-	validationResult = Validator().validate('./test_directory_fail', schema)
+	result = Validator().validate('./test_directory_fail', schema)
 
-	print_results_3(validationResult)
+	print_results_3(result)
 
-	if(validationResult.has_error()):
+	if(result.has_error()):
 		exit(1)
 	else:
 		exit(0)
