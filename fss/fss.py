@@ -9,6 +9,7 @@ import fnmatch
 @dataclass
 class fssNode:
 	name: str
+	forbidden: bool = False
 	parent: Optional['fssNode'] = None
 
 	@property
@@ -78,7 +79,10 @@ class fssDirNode(fssNode):
 		return None
 	
 	def get_matching_child(self, name) -> Optional['fssNode']:
-		for node in self.childs:
+		"""Get the first matching child, prioritizing forbidden nodes"""
+		
+		sorted_childs = sorted(self.childs, key=lambda x: x.forbidden, reverse=True)
+		for node in sorted_childs:
 			if node.validate_against(name):
 				return node
 
@@ -92,6 +96,7 @@ class fssDirNode(fssNode):
 
 @dataclass
 class fssFileNode(fssNode):
+
 	def __eq__(self, other: object) -> bool:
 		return (
 			isinstance(other, self.__class__) and

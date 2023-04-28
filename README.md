@@ -30,7 +30,7 @@ else:
 | `...` | Allows any (and nested) files and folder | X |
 | `<0-5>` | Control the quantity of matching folders/files |   |
 | `+` | Makes the file required |   |
-| `-` | Makes the file forbidden |   |
+| `-` | Makes the file forbidden | X |
 
 ```txt
 assets/
@@ -39,7 +39,7 @@ assets/
 		*.gif
 		*.png
 	models/
-		* [0-255]
+		* <0-255>
 	...
 ```
 
