@@ -32,7 +32,7 @@ class TestValidator(unittest.TestCase):
 		self.assertTrue(result.has_error(), 'validation results did not had errors')
 
 	def assert_validation_result_has_no_errors(self, result: ValidationResult):
-		self.assertFalse(result.has_error(), 'validation results had errors')
+		self.assertFalse(result.has_error(), f'validation results had errors: {result.errors_by_path}')
 
 	def test_validate_path_does_not_exists(self):
 		with self.assertRaises(ValueError) as e:
@@ -371,6 +371,65 @@ class TestValidator(unittest.TestCase):
 		os.makedirs(folder_dir)
 
 		with open(folder_dir / 'Fails_00.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_errors(result)
+
+	def test_validate_forbiden_pass(self):
+		schema =  'Folder/\n'
+		schema += '\t-File.txt\n'
+		schema += '\tAnAcceptableFile.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'AnAcceptableFile.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_no_errors(result)
+
+	def test_validate_forbiden_fail(self):
+		schema =  'Folder/\n'
+		schema += '\t-File.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'File.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_errors(result)
+
+	def test_validate_forbiden_with_start_fail(self):
+		schema =  'Folder/\n'
+		schema += '\t-File.txt\n'
+		schema += '\t*.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'File.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_errors(result)
+
+	def test_validate_forbiden_with_start2_fail(self):
+		schema =  'Folder/\n'
+		schema += '\t*.txt\n'
+		schema += '\t-File.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'File.txt', 'w') as f: pass
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)

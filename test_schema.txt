@@ -25,6 +25,8 @@ Assets/
 			Animations/
 				*.anim
 			README.md
+			-*.txt
+			*
 	CommunityAssets/
 		...
 	Scenes/

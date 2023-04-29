@@ -59,11 +59,19 @@ class Validator():
 				matching_node = current_node.get_matching_child(name)
 
 				if(matching_node == None):
-					results.add_error(path, f'Not allowed')
+					results.add_error(path, 'No match found')
 					continue
-				
+
+				if(isinstance(matching_node, fssDirNode) and matching_node.forbidden):
+					results.add_error(path, 'Folder Forbidden')
+					continue
+
+				if(isinstance(matching_node, fssFileNode) and matching_node.forbidden):
+					results.add_error(path, 'File Forbidden')
+					continue
+
 				sub_results = self._validation_helper(path, matching_node)
 
 				results.update(sub_results)
-				
+
 		return results

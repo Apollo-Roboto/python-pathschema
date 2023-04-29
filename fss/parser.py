@@ -56,19 +56,26 @@ class Parser():
 						raise Exception('Unexpected None value')
 					node_depth -= 1
 
+			is_forbidden = name.startswith('-')
+			name = name.removeprefix('-')
+
 			if(name == '...'):
+				if(is_forbidden):
+					raise SchemaError(f'... Cannot be forbiden')
 				node = fssAnyNode()
 
 			elif(name.endswith('/')):
 				node = fssDirNode(
 					name=name.removesuffix('/'),
 					parent=current_node,
+					forbidden=is_forbidden,
 				)
 
 			else:
 				node = fssFileNode(
 					name=name,
 					parent=current_node,
+					forbidden=is_forbidden,
 				)
 
 			if(isinstance(current_node, fssDirNode)):
