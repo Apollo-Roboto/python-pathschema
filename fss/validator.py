@@ -27,6 +27,8 @@ class Validator():
 
 		schema_node_tree = Parser().schema_to_node_tree(schema)
 
+		print_node_tree(schema_node_tree)
+
 		results = self._validation_helper(path.absolute(), schema_node_tree)
 
 		return results

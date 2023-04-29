@@ -10,6 +10,7 @@ import fnmatch
 class fssNode:
 	name: str
 	forbidden: bool = False
+	required: bool = False
 	parent: Optional['fssNode'] = None
 
 	@property
@@ -79,7 +80,7 @@ class fssDirNode(fssNode):
 		return None
 	
 	def get_matching_child(self, name) -> Optional['fssNode']:
-		"""Get the first matching child, prioritizing forbidden nodes"""
+		"""Get the first matching child, prioritizing forbidden"""
 		
 		sorted_childs = sorted(self.childs, key=lambda x: x.forbidden, reverse=True)
 		for node in sorted_childs:
@@ -87,6 +88,9 @@ class fssDirNode(fssNode):
 				return node
 
 		return None
+	
+	def required_satisfied(self, name) -> bool:
+		return True
 
 	def __str__(self) -> str:
 		return f'node:📁{self.name}/(childs:{len(self.childs)})'

@@ -14,6 +14,8 @@ def main():
 
 	result = Validator().validate('./test_directory_fail', schema)
 
+	print()
+
 	print_results_3(result)
 
 	if(result.has_error()):
