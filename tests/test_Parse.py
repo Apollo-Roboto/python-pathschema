@@ -121,3 +121,19 @@ class TestParse(unittest.TestCase):
 		print_node_tree(returned_tree)
 
 		self.assertEqual(expected_tree, returned_tree)
+
+	def test_schema_to_node_tree_required_pass(self):
+		schema =  'Assets/\n'
+		schema += '\t+*.md\n'
+		
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = fssDirNode(name='schema_root') \
+			.add_child(fssDirNode(name='Assets')
+				.add_child(fssFileNode(name='*.md', required=True))
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)

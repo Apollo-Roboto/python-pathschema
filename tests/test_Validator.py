@@ -433,3 +433,63 @@ class TestValidator(unittest.TestCase):
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
+
+	def test_validate_required_pass(self):
+		schema =  'Folder/\n'
+		schema += '\t+File.txt\n'
+		schema += '\tSomeOtherFile.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'File.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_no_errors(result)
+
+	def test_validate_required_fail(self):
+		schema =  'Folder/\n'
+		schema += '\t+File.txt\n'
+		schema += '\tSomeOtherFile.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_errors(result)
+
+	def test_validate_required_with_start_fail(self):
+		schema =  'Folder/\n'
+		schema += '\t+File.txt\n'
+		schema += '\t*.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_errors(result)
+
+	def test_validate_required_with_start2_fail(self):
+		schema =  'Folder/\n'
+		schema += '\t*.txt\n'
+		schema += '\t+File.txt\n'
+
+		dir_to_validate = self._temp_dir()
+
+		folder_dir = dir_to_validate / 'Folder'
+		os.makedirs(folder_dir)
+
+		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+
+		result = Validator().validate(dir_to_validate, schema)
+		self.assert_validation_result_has_errors(result)

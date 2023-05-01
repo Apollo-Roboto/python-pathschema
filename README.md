@@ -29,7 +29,7 @@ else:
 | `*.ext/` | Unix style pattern matching for folders | X |
 | `...` | Allows any (and nested) files and folder | X |
 | `<0-5>` | Control the quantity of matching folders/files |   |
-| `+` | Makes the file required |   |
+| `+` | Makes the file required | X |
 | `-` | Makes the file forbidden | X |
 
 ```txt
@@ -40,7 +40,7 @@ assets/
 		*.png
 	models/
 		* <0-255>
-	...
+	+README.md
 ```
 
 ## Only allows `.mp4` or `.flv` in the `videos` folder

@@ -59,9 +59,14 @@ class Parser():
 			is_forbidden = name.startswith('-')
 			name = name.removeprefix('-')
 
+			is_required = name.startswith('+')
+			name = name.removeprefix('+')
+
 			if(name == '...'):
 				if(is_forbidden):
-					raise SchemaError(f'... Cannot be forbiden')
+					raise SchemaError(f'Any (...) Cannot be forbidden. At line {line_num + 1}')
+				if(is_required):
+					raise SchemaError(f'Any (...) Cannot be required. At line {line_num + 1}')
 				node = fssAnyNode()
 
 			elif(name.endswith('/')):
@@ -69,6 +74,7 @@ class Parser():
 					name=name.removesuffix('/'),
 					parent=current_node,
 					forbidden=is_forbidden,
+					required=is_required,
 				)
 
 			else:
@@ -76,6 +82,7 @@ class Parser():
 					name=name,
 					parent=current_node,
 					forbidden=is_forbidden,
+					required=is_required,
 				)
 
 			if(isinstance(current_node, fssDirNode)):

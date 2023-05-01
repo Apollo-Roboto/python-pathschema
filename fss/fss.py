@@ -78,23 +78,34 @@ class fssDirNode(fssNode):
 				return node
 
 		return None
-	
+
+	def get_required_childs(self) -> list[fssNode]:
+		return list(filter(lambda x: x.required, self.childs))
+
 	def get_matching_child(self, name) -> Optional['fssNode']:
 		"""Get the first matching child, prioritizing forbidden"""
-		
+
 		sorted_childs = sorted(self.childs, key=lambda x: x.forbidden, reverse=True)
 		for node in sorted_childs:
 			if node.validate_against(name):
 				return node
 
 		return None
-	
+
 	def required_satisfied(self, name) -> bool:
+
+		# for each child that are required
+		for child in self.childs:
+			if(not child.required):
+				continue
+
+			match = child.validate_against(name)
+
 		return True
 
 	def __str__(self) -> str:
 		return f'node:📁{self.name}/(childs:{len(self.childs)})'
-	
+
 	def __repr__(self) -> str:
 		return f'node:📁{self.name}/(childs:{len(self.childs)})'
 
@@ -109,7 +120,7 @@ class fssFileNode(fssNode):
 
 	def __str__(self) -> str:
 		return f'node:📄{self.name}'
-	
+
 	def __repr__(self) -> str:
 		return f'node:📄{self.name}'
 
@@ -119,13 +130,13 @@ class fssAnyNode(fssNode):
 
 	def validate_against(self, name: str) -> bool:
 		return True
-	
+
 	def __eq__(self, other: object) -> bool:
 		return isinstance(other, self.__class__)
 
 	def __str__(self) -> str:
 		return f'node:...'
-	
+
 	def __repr__(self) -> str:
 		return f'node:...'
 

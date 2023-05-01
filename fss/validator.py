@@ -27,7 +27,7 @@ class Validator():
 
 		schema_node_tree = Parser().schema_to_node_tree(schema)
 
-		print_node_tree(schema_node_tree)
+		# print_node_tree(schema_node_tree)
 
 		results = self._validation_helper(path.absolute(), schema_node_tree)
 
@@ -53,21 +53,40 @@ class Validator():
 			return results
 
 		if(isinstance(current_node, fssDirNode) and current_path.is_dir()):
+
+			required_childs = current_node.get_required_childs()
+
+			# for each child of the current path
 			for name in os.listdir(current_path):
 				path = current_path / name
 
 				results.add_path(path)
 
+				# check if it matches a required child and remove
+				i = 0
+				while(i < len(required_childs)):
+					required_child = required_childs[i]
+
+					# if this child is satisfied
+					if(required_child.validate_against(name)):
+						required_childs.pop(i)
+						continue
+
+					i += 1
+
 				matching_node = current_node.get_matching_child(name)
 
+				# if there is no match
 				if(matching_node == None):
 					results.add_error(path, 'No match found')
 					continue
 
+				# if folder is forbidden
 				if(isinstance(matching_node, fssDirNode) and matching_node.forbidden):
 					results.add_error(path, 'Folder Forbidden')
 					continue
 
+				# if file is forbidden
 				if(isinstance(matching_node, fssFileNode) and matching_node.forbidden):
 					results.add_error(path, 'File Forbidden')
 					continue
@@ -75,5 +94,12 @@ class Validator():
 				sub_results = self._validation_helper(path, matching_node)
 
 				results.update(sub_results)
+
+			# if the list of required childs is not empty, there are missing requirements
+			for child in required_childs:
+				if(isinstance(child, fssDirNode)):
+					results.add_error(current_path, f'Missing required folder {child.name}')
+				if(isinstance(child, fssFileNode)):
+					results.add_error(current_path, f'Missing required file {child.name}')
 
 		return results
