@@ -1,22 +1,30 @@
 from fss.validator import Validator
+from fss.parser import Parser
+from fss.utils import print_node_tree
 from fss.fss import ValidationResult
 import os
 from colorama import Fore, Back, Style
+from datetime import datetime
 
 
 
 def main():
 
-	schema = ''
+	start_time = datetime.now()
 
-	with open('./test_schema.txt', 'r') as f:
+	schema = ''
+	with open('./tests/experimentations/test_schema.txt', 'r') as f:
+	# with open('./tests/experimentations/test_massive_schema.txt', 'r') as f:
 		schema = f.read()
 
-	result = Validator().validate('./test_directory_fail', schema)
+	# result = Validator().validate('./tests/experimentations/test_massive_directory', schema)
+	result = Validator().validate('./tests/experimentations/test_directory_ok', schema)
+	# result = Validator().validate('./tests/experimentations/test_directory_fail', schema)
 
 	print()
 
-	print_results_3(result)
+	print_results_3(result, errors_only=False)
+	print(f'it took {datetime.now() - start_time} to complete')
 
 	if(result.has_error()):
 		exit(1)
@@ -61,11 +69,18 @@ def print_results_2(results: ValidationResult):
 	else:
 		print(f'{Fore.GREEN}{Style.BRIGHT}Valid{Style.RESET_ALL}')
 
-def print_results_3(results: ValidationResult):
+def print_results_3(results: ValidationResult, errors_only=False):
+
+	num_of_errors = 0
+	num_of_path = 0
+
 	for path, errors in results.errors_by_path.items():
+		num_of_path += 1
 		if(len(errors) > 0 ):
+			num_of_errors += 1
 			print(f'{Fore.RED}FAIL  ', end='')
 		else:
+			if(errors_only): continue
 			print(f'  OK  ', end='')
 
 		print(f'{path}{Style.RESET_ALL}')
@@ -75,10 +90,12 @@ def print_results_3(results: ValidationResult):
 	
 	print()
 
-	if(results.has_error()):
-		print(f'{Fore.RED}{Style.BRIGHT}Invalid{Style.RESET_ALL}')
+	score = f'{num_of_path-num_of_errors}/{num_of_path}'
+
+	if(num_of_errors > 0):
+		print(f'{Fore.RED}{Style.BRIGHT}{score} Invalid{Style.RESET_ALL}')
 	else:
-		print(f'{Fore.GREEN}{Style.BRIGHT}Valid{Style.RESET_ALL}')
+		print(f'{Fore.GREEN}{Style.BRIGHT}{score} Valid{Style.RESET_ALL}')
 
 if __name__ == '__main__':
 	main()

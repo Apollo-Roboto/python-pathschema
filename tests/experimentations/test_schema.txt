@@ -24,9 +24,15 @@ Assets/
 				*.cs
 			Animations/
 				*.anim
-			README.md
+			+README.md
 			-*.txt
-			*
+			"(solid|trans)_.+\.mat"
+			*.png
+			*.gif
+			*.fbx
+			*.cs
+			*.anim
+			*.prefab
 	CommunityAssets/
 		...
 	Scenes/
