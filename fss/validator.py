@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from fss.parser import Parser
 from fss.utils import print_node_tree
-from fss.fss import fssDirNode, fssFileNode, fssNode, ValidationResult
+from fss.fss import fssDirNode, fssFileNode, fssNode, ValidationResult, Necessity
 
 
 
@@ -82,12 +82,12 @@ class Validator():
 					continue
 
 				# if folder is forbidden
-				if(isinstance(matching_node, fssDirNode) and matching_node.forbidden):
+				if(isinstance(matching_node, fssDirNode) and matching_node.necessity == Necessity.FORBIDDEN):
 					results.add_error(path, 'Folder Forbidden')
 					continue
 
 				# if file is forbidden
-				if(isinstance(matching_node, fssFileNode) and matching_node.forbidden):
+				if(isinstance(matching_node, fssFileNode) and matching_node.necessity == Necessity.FORBIDDEN):
 					results.add_error(path, 'File Forbidden')
 					continue
 

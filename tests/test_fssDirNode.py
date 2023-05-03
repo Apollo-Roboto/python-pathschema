@@ -4,7 +4,7 @@ from fss.utils import print_node_tree
 
 
 
-class TestFssNode(unittest.TestCase):
+class TestFssDirNode(unittest.TestCase):
 
 	def setUp(self):
 		"""Adds a little newline to read the output better"""

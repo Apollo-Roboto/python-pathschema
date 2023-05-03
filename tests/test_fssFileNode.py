@@ -3,7 +3,7 @@ from fss.fss import fssNode, fssDirNode, fssFileNode
 
 
 
-class TestFssNode(unittest.TestCase):
+class TestFssFileNode(unittest.TestCase):
 
 	def setUp(self):
 		"""Adds a little newline to read the output better"""

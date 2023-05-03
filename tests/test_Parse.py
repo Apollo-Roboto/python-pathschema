@@ -1,5 +1,5 @@
 import unittest
-from fss.fss import fssDirNode, fssFileNode, fssNode, fssAnyNode
+from fss.fss import fssDirNode, fssFileNode, fssAnyNode, Necessity
 from fss.parser import Parser
 from fss.utils import print_node_tree
 from fss.exceptions import SchemaError
@@ -114,7 +114,7 @@ class TestParse(unittest.TestCase):
 
 		expected_tree = fssDirNode(name='schema_root') \
 			.add_child(fssDirNode(name='Assets')
-				.add_child(fssFileNode(name='*.md', forbidden=True))
+				.add_child(fssFileNode(name='*.md', necessity=Necessity.FORBIDDEN))
 			)
 
 		print_node_tree(expected_tree)
@@ -130,7 +130,7 @@ class TestParse(unittest.TestCase):
 
 		expected_tree = fssDirNode(name='schema_root') \
 			.add_child(fssDirNode(name='Assets')
-				.add_child(fssFileNode(name='*.md', required=True))
+				.add_child(fssFileNode(name='*.md', necessity=Necessity.REQUIRED))
 			)
 
 		print_node_tree(expected_tree)
