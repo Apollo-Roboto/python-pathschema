@@ -1,5 +1,5 @@
 import unittest
-from fss.fss import fssDirNode, fssFileNode, fssNode, fssAnyNode
+from fss.fss import fssDirNode, fssFileNode, fssAnyNode, Necessity
 from fss.parser import Parser
 from fss.utils import print_node_tree
 from fss.exceptions import SchemaError
@@ -114,7 +114,23 @@ class TestParse(unittest.TestCase):
 
 		expected_tree = fssDirNode(name='schema_root') \
 			.add_child(fssDirNode(name='Assets')
-				.add_child(fssFileNode(name='*.md', forbidden=True))
+				.add_child(fssFileNode(name='*.md', necessity=Necessity.FORBIDDEN))
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)
+
+	def test_schema_to_node_tree_required_pass(self):
+		schema =  'Assets/\n'
+		schema += '\t+*.md\n'
+		
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = fssDirNode(name='schema_root') \
+			.add_child(fssDirNode(name='Assets')
+				.add_child(fssFileNode(name='*.md', necessity=Necessity.REQUIRED))
 			)
 
 		print_node_tree(expected_tree)

@@ -1,4 +1,5 @@
-from fss.fss import fssNode, fssFileNode, fssDirNode, fssAnyNode
+from fss.fss import fssNode, fssFileNode, fssDirNode, fssAnyNode, Necessity
+from colorama import Fore, Style
 
 def print_node_tree(node: fssNode, sort=False, _depth=0, _is_last=False, _floating=0):
 	"""
@@ -18,15 +19,21 @@ def print_node_tree(node: fssNode, sort=False, _depth=0, _is_last=False, _floati
 			else:
 				decorator += '   '
 
+	color = Fore.RESET
+	if(node.necessity == Necessity.FORBIDDEN):
+		color = Fore.RED + Style.BRIGHT
+	if(node.necessity == Necessity.REQUIRED):
+		color = Fore.GREEN + Style.BRIGHT
+
 	if(isinstance(node, fssDirNode)):
-		decorator += '📁 '
-		print(decorator + node.name + '/')
+		decorator += '📁 ' + color
+		print(decorator + node.name + '/' + Style.RESET_ALL)
 	elif(isinstance(node, fssFileNode)):
-		decorator += '📄 '
-		print(decorator + node.name)
+		decorator += '📄 ' + color
+		print(decorator + node.name + Style.RESET_ALL)
 	elif(isinstance(node, fssAnyNode)):
-		decorator += ''
-		print(decorator + node.name)
+		decorator += '' + color
+		print(decorator + node.name + Style.RESET_ALL)
 
 	if(not isinstance(node, fssDirNode)):
 		return

@@ -1,4 +1,4 @@
-from fss.fss import fssDirNode, fssFileNode, fssNode, fssAnyNode
+from fss.fss import fssDirNode, fssFileNode, fssAnyNode, Necessity
 from fss.exceptions import SchemaError
 
 illegalCharacters = ['\\', '/', '?', '*', ':', '|', '"', '<', '>']
@@ -56,26 +56,34 @@ class Parser():
 						raise Exception('Unexpected None value')
 					node_depth -= 1
 
-			is_forbidden = name.startswith('-')
-			name = name.removeprefix('-')
+			necessity = Necessity.OPTIONAL
+
+			if(name.startswith('-')):
+				name = name.removeprefix('-')
+				necessity = Necessity.FORBIDDEN
+
+			elif(name.startswith('+')):
+				name = name.removeprefix('+')
+				necessity = Necessity.REQUIRED
 
 			if(name == '...'):
-				if(is_forbidden):
-					raise SchemaError(f'... Cannot be forbiden')
+				if(necessity != Necessity.OPTIONAL):
+					raise SchemaError(f'Any (...) Cannot be forbidden or required. At line {line_num + 1}')
+
 				node = fssAnyNode()
 
 			elif(name.endswith('/')):
 				node = fssDirNode(
-					name=name.removesuffix('/'),
+					name=name.removesuffix('/').strip(),
 					parent=current_node,
-					forbidden=is_forbidden,
+					necessity=necessity,
 				)
 
 			else:
 				node = fssFileNode(
-					name=name,
+					name=name.strip(),
 					parent=current_node,
-					forbidden=is_forbidden,
+					necessity=necessity,
 				)
 
 			if(isinstance(current_node, fssDirNode)):

@@ -3,14 +3,22 @@ from typing import Union, Optional
 from pathlib import Path
 import re
 import fnmatch
+from enum import Enum
+
+
+
+class Necessity(Enum):
+	OPTIONAL = 0
+	REQUIRED = 1
+	FORBIDDEN = 2
 
 
 
 @dataclass
 class fssNode:
 	name: str
-	forbidden: bool = False
 	parent: Optional['fssNode'] = None
+	necessity: Necessity = Necessity.OPTIONAL
 
 	@property
 	def is_regex(self) -> bool:
@@ -45,7 +53,8 @@ class fssNode:
 	def __eq__(self, other: object) -> bool:
 		return (
 			isinstance(other, self.__class__) and
-			self.name == other.name
+			self.name == other.name and
+			self.necessity == other.necessity
 		)
 
 	def __str__(self) -> str:
@@ -62,6 +71,7 @@ class fssDirNode(fssNode):
 		return (
 			isinstance(other, self.__class__) and
 			self.name == other.name and
+			self.necessity == other.necessity and
 			len(self.childs) == len(other.childs) and
 			self.childs == other.childs
 		)
@@ -77,11 +87,17 @@ class fssDirNode(fssNode):
 				return node
 
 		return None
-	
+
+	def get_required_childs(self) -> list[fssNode]:
+		return list(filter(lambda x: x.necessity == Necessity.REQUIRED, self.childs))
+
+	def get_forbidden_childs(self) -> list[fssNode]:
+		return list(filter(lambda x: x.necessity == Necessity.FORBIDDEN, self.childs))
+
 	def get_matching_child(self, name) -> Optional['fssNode']:
-		"""Get the first matching child, prioritizing forbidden nodes"""
-		
-		sorted_childs = sorted(self.childs, key=lambda x: x.forbidden, reverse=True)
+		"""Get the first matching child, prioritizing forbidden"""
+
+		sorted_childs = sorted(self.childs, key=lambda x: x.necessity == Necessity.FORBIDDEN, reverse=True)
 		for node in sorted_childs:
 			if node.validate_against(name):
 				return node
@@ -90,7 +106,7 @@ class fssDirNode(fssNode):
 
 	def __str__(self) -> str:
 		return f'node:📁{self.name}/(childs:{len(self.childs)})'
-	
+
 	def __repr__(self) -> str:
 		return f'node:📁{self.name}/(childs:{len(self.childs)})'
 
@@ -100,28 +116,30 @@ class fssFileNode(fssNode):
 	def __eq__(self, other: object) -> bool:
 		return (
 			isinstance(other, self.__class__) and
-			self.name == other.name
+			self.name == other.name and
+			self.necessity == other.necessity
 		)
 
 	def __str__(self) -> str:
 		return f'node:📄{self.name}'
-	
+
 	def __repr__(self) -> str:
 		return f'node:📄{self.name}'
 
 @dataclass
 class fssAnyNode(fssNode):
 	name: str = '...'
+	necessity: Necessity = Necessity.OPTIONAL
 
 	def validate_against(self, name: str) -> bool:
 		return True
-	
+
 	def __eq__(self, other: object) -> bool:
 		return isinstance(other, self.__class__)
 
 	def __str__(self) -> str:
 		return f'node:...'
-	
+
 	def __repr__(self) -> str:
 		return f'node:...'
 
