@@ -9,6 +9,10 @@ illegalCharacters = ['\\', '/', '?', '*', ':', '|', '"', '<', '>']
 class Parser():
 
 	indentation_token = '\t'
+	directory_token = '/'
+	required_token = '+'
+	forbidden_token = '-'
+	any_token = '...'
 
 	def _detect_indentation(self):
 		raise NotImplementedError()
@@ -58,23 +62,23 @@ class Parser():
 
 			necessity = Necessity.OPTIONAL
 
-			if name.startswith('-'):
-				name = name.removeprefix('-')
+			if name.startswith(self.forbidden_token):
+				name = name.removeprefix(self.forbidden_token)
 				necessity = Necessity.FORBIDDEN
 
-			elif name.startswith('+'):
-				name = name.removeprefix('+')
+			elif name.startswith(self.required_token):
+				name = name.removeprefix(self.required_token)
 				necessity = Necessity.REQUIRED
 
-			if name == '...':
+			if name == self.any_token:
 				if necessity != Necessity.OPTIONAL:
-					raise SchemaError(f'Any (...) Cannot be forbidden or required. At line {line_num + 1}')
+					raise SchemaError(f'Any ({self.any_token}) Cannot be forbidden or required. At line {line_num + 1}')
 
 				node = AnyPathNode()
 
-			elif name.endswith('/'):
+			elif name.endswith(self.directory_token):
 				node = DirPathNode(
-					name=name.removesuffix('/').strip(),
+					name=name.removesuffix(self.directory_token).strip(),
 					parent=current_node,
 					necessity=necessity,
 				)

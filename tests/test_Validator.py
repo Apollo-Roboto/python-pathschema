@@ -11,19 +11,22 @@ class TestValidator(unittest.TestCase):
 
 	@classmethod
 	def tearDownClass(cls):
+
+		# remove the temporary test directory
 		shutil.rmtree(Path(
 			tempfile.gettempdir(),
-			'python_test',
+			'pathschema_test',
 		))
 
 	@classmethod
-	def _temp_dir(cls):
+	def _temp_dir(cls) -> Path:
+		"""Get a temporary directory"""
 		return Path(
 			tempfile.gettempdir(),
-			'python_test',
+			'pathschema_test',
 			str(uuid.uuid4())
 		)
-	
+
 	def setUp(self) -> None:
 		"""Adds a little newline to read the output better"""
 		print()
@@ -44,7 +47,7 @@ class TestValidator(unittest.TestCase):
 		temp_file = Path(self._temp_dir(), 'test.txt')
 
 		os.makedirs(temp_file.parent)
-		with open(temp_file, 'w') as f: pass
+		temp_file.touch()
 
 		with self.assertRaises(ValueError) as e:
 			Validator().validate(temp_file, schema='')
@@ -136,11 +139,11 @@ class TestValidator(unittest.TestCase):
 
 		texture_dir = dir_to_validate.joinpath('Textures')
 		os.makedirs(texture_dir)
-		with open(texture_dir / 'robot.png', 'w') as f: pass
+		(texture_dir / 'robot.png').touch()
 
 		models_dir = dir_to_validate.joinpath('Models')
 		os.makedirs(models_dir)
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(models_dir / 'robot.fbx').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -155,11 +158,11 @@ class TestValidator(unittest.TestCase):
 
 		texture_dir = dir_to_validate.joinpath('Textures')
 		os.makedirs(texture_dir)
-		with open(texture_dir / 'robot.png', 'w') as f: pass
+		(texture_dir / 'robot.png').touch()
 
 		models_dir = dir_to_validate.joinpath('Models')
 		os.makedirs(models_dir)
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(models_dir / 'robot.fbx').touch()
 
 		os.makedirs(texture_dir / 'invalid_dir')
 
@@ -174,7 +177,7 @@ class TestValidator(unittest.TestCase):
 
 		note_dir = dir_to_validate.joinpath('Notes')
 		os.makedirs(note_dir)
-		with open(note_dir / 'robot.md', 'w') as f: pass
+		(note_dir / 'robot.md').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -187,7 +190,7 @@ class TestValidator(unittest.TestCase):
 
 		note_dir = dir_to_validate.joinpath('Notes')
 		os.makedirs(note_dir)
-		with open(note_dir / 'robot.md', 'w') as f: pass
+		(note_dir / 'robot.md').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -200,7 +203,7 @@ class TestValidator(unittest.TestCase):
 
 		note_dir = dir_to_validate.joinpath('Notes')
 		os.makedirs(note_dir)
-		with open(note_dir / 'robot.txt', 'w') as f: pass
+		(note_dir / 'robot.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -258,8 +261,8 @@ class TestValidator(unittest.TestCase):
 		models_dir = assets_dir / 'Models'
 		os.makedirs(models_dir)
 
-		with open(textures_dir / 'robot.png', 'w') as f: pass
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(textures_dir / 'robot.png').touch()
+		(models_dir / 'robot.fbx').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -281,8 +284,8 @@ class TestValidator(unittest.TestCase):
 		models_dir = assets_dir / 'Models'
 		os.makedirs(models_dir)
 
-		with open(textures_dir / 'robot.jpg', 'w') as f: pass
-		with open(models_dir / 'robot.obj', 'w') as f: pass
+		(textures_dir / 'robot.jpg').touch()
+		(models_dir / 'robot.obj').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -300,8 +303,8 @@ class TestValidator(unittest.TestCase):
 		models_dir = assets_dir / 'Models'
 		os.makedirs(models_dir)
 
-		with open(textures_dir / 'robot.png', 'w') as f: pass
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(textures_dir / 'robot.png').touch()
+		(models_dir / 'robot.fbx').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -318,8 +321,8 @@ class TestValidator(unittest.TestCase):
 		textures_dir = assets_dir / 'Textures'
 		os.makedirs(textures_dir)
 
-		with open(textures_dir / 'robot.png', 'w') as f: pass
-		with open(textures_dir / 'planet.png', 'w') as f: pass
+		(textures_dir / 'robot.png').touch()
+		(textures_dir / 'planet.png').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -336,8 +339,8 @@ class TestValidator(unittest.TestCase):
 		textures_dir = assets_dir / 'Textures'
 		os.makedirs(textures_dir)
 
-		with open(textures_dir / 'robot.jpg', 'w') as f: pass
-		with open(textures_dir / 'planet.jpeg', 'w') as f: pass
+		(textures_dir / 'robot.jpg').touch()
+		(textures_dir / 'planet.jpeg').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -351,12 +354,12 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File_0.txt', 'w') as f: pass
-		with open(folder_dir / 'File_1.txt', 'w') as f: pass
-		with open(folder_dir / 'File_2.txt', 'w') as f: pass
-		with open(folder_dir / 'File_A.txt', 'w') as f: pass
-		with open(folder_dir / 'File_B.txt', 'w') as f: pass
-		with open(folder_dir / 'File_C.txt', 'w') as f: pass
+		(folder_dir / 'File_0.txt').touch()
+		(folder_dir / 'File_1.txt').touch()
+		(folder_dir / 'File_2.txt').touch()
+		(folder_dir / 'File_A.txt').touch()
+		(folder_dir / 'File_B.txt').touch()
+		(folder_dir / 'File_C.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -370,7 +373,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'Fails_00.txt', 'w') as f: pass
+		(folder_dir / 'Fails_00.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -385,7 +388,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'AnAcceptableFile.txt', 'w') as f: pass
+		(folder_dir / 'AnAcceptableFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -399,7 +402,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -414,7 +417,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -429,7 +432,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -444,7 +447,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
@@ -459,7 +462,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+		(folder_dir / 'SomeOtherFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -474,7 +477,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+		(folder_dir / 'SomeOtherFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
@@ -489,7 +492,7 @@ class TestValidator(unittest.TestCase):
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+		(folder_dir / 'SomeOtherFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)

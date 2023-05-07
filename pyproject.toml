@@ -30,4 +30,4 @@ classifiers = [
 ]
 
 [project.urls]
-"Source" = "https://github.com/Apollo-Roboto/file-system-schema"
+"Source" = "https://github.com/Apollo-Roboto/python-pathschema"
