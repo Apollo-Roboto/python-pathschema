@@ -1,8 +1,8 @@
 import unittest
-from fss.fss import fssDirNode, fssFileNode, fssAnyNode, Necessity
-from fss.parser import Parser
-from fss.utils import print_node_tree
-from fss.exceptions import SchemaError
+from pathschema.models import DirPathNode, FilePathNode, AnyPathNode, Necessity
+from pathschema.parser import Parser
+from pathschema.utils import print_node_tree
+from pathschema.exceptions import SchemaError
 
 
 
@@ -21,14 +21,14 @@ class TestParse(unittest.TestCase):
 
 		root_node = Parser().schema_to_node_tree(schema)
 		
-		self.assertIn(fssDirNode(name='Assets', parent=root_node), root_node.childs)
+		self.assertIn(DirPathNode(name='Assets', parent=root_node), root_node.childs)
 
 	def test_schema_to_node_tree_simple_file_pass(self):
 		schema = 'picture.png'
 
 		root_node = Parser().schema_to_node_tree(schema)
 		
-		self.assertIn(fssFileNode(name='picture.png', parent=root_node), root_node.childs)
+		self.assertIn(FilePathNode(name='picture.png', parent=root_node), root_node.childs)
 
 	def test_schema_to_node_tree_complex_dir_pass(self):
 		schema =  'Assets/\n'
@@ -44,18 +44,18 @@ class TestParse(unittest.TestCase):
 
 		returned_tree = Parser().schema_to_node_tree(schema)
 		
-		expected_tree = fssDirNode(name='schema_root') \
-			.add_child(fssDirNode(name='Assets')
-				.add_child(fssDirNode(name='Globals')
-					.add_child(fssDirNode(name='Materials'))
-					.add_child(fssDirNode(name='Textures'))
-					.add_child(fssDirNode(name='Models'))
-					.add_child(fssDirNode(name='Scripts'))
-					.add_child(fssDirNode(name='Animations'))
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(DirPathNode(name='Globals')
+					.add_child(DirPathNode(name='Materials'))
+					.add_child(DirPathNode(name='Textures'))
+					.add_child(DirPathNode(name='Models'))
+					.add_child(DirPathNode(name='Scripts'))
+					.add_child(DirPathNode(name='Animations'))
 				)
-				.add_child(fssDirNode(name='Prefabs'))
-				.add_child(fssDirNode(name='CommunityAssets'))
-				.add_child(fssDirNode(name='Scenes'))
+				.add_child(DirPathNode(name='Prefabs'))
+				.add_child(DirPathNode(name='CommunityAssets'))
+				.add_child(DirPathNode(name='Scenes'))
 			)
 
 		self.assertEqual(expected_tree, returned_tree)
@@ -68,12 +68,12 @@ class TestParse(unittest.TestCase):
 
 		returned_tree = Parser().schema_to_node_tree(schema)
 
-		expected_tree = fssDirNode(name='schema_root') \
-			.add_child(fssDirNode(name='Textures')
-				.add_child(fssFileNode(name='robot.png'))
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Textures')
+				.add_child(FilePathNode(name='robot.png'))
 			) \
-			.add_child(fssDirNode(name='Models')
-				.add_child(fssFileNode(name='robot.fbx'))
+			.add_child(DirPathNode(name='Models')
+				.add_child(FilePathNode(name='robot.fbx'))
 			)
 		
 		print_node_tree(expected_tree)
@@ -96,9 +96,9 @@ class TestParse(unittest.TestCase):
 
 		returned_tree = Parser().schema_to_node_tree(schema)
 
-		expected_tree = fssDirNode(name='schema_root') \
-			.add_child(fssDirNode(name='Assets')
-				.add_child(fssAnyNode())
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(AnyPathNode())
 			)
 
 		print_node_tree(expected_tree)
@@ -112,9 +112,9 @@ class TestParse(unittest.TestCase):
 		
 		returned_tree = Parser().schema_to_node_tree(schema)
 
-		expected_tree = fssDirNode(name='schema_root') \
-			.add_child(fssDirNode(name='Assets')
-				.add_child(fssFileNode(name='*.md', necessity=Necessity.FORBIDDEN))
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(FilePathNode(name='*.md', necessity=Necessity.FORBIDDEN))
 			)
 
 		print_node_tree(expected_tree)
@@ -128,9 +128,9 @@ class TestParse(unittest.TestCase):
 		
 		returned_tree = Parser().schema_to_node_tree(schema)
 
-		expected_tree = fssDirNode(name='schema_root') \
-			.add_child(fssDirNode(name='Assets')
-				.add_child(fssFileNode(name='*.md', necessity=Necessity.REQUIRED))
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(FilePathNode(name='*.md', necessity=Necessity.REQUIRED))
 			)
 
 		print_node_tree(expected_tree)

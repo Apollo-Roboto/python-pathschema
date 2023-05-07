@@ -1,5 +1,5 @@
-from fss.fss import fssDirNode, fssFileNode, fssAnyNode, Necessity
-from fss.exceptions import SchemaError
+from pathschema.models import DirPathNode, FilePathNode, AnyPathNode, Necessity
+from pathschema.exceptions import SchemaError
 
 illegalCharacters = ['\\', '/', '?', '*', ':', '|', '"', '<', '>']
 # dot '.' is not allowed at the end of a directory
@@ -13,19 +13,19 @@ class Parser():
 	def _detect_indentation(self):
 		raise NotImplementedError()
 
-	def _indentation_count(self,  s: str):
+	def _indentation_count(self,  string: str):
 		num_of_indentation = 0
-		for c in s:
-			if(c == self.indentation_token):
+		for character in string:
+			if character == self.indentation_token:
 				num_of_indentation += 1
 			else:
 				break
 
 		return num_of_indentation
 
-	def schema_to_node_tree(self, schema: str) -> fssDirNode:
+	def schema_to_node_tree(self, schema: str) -> DirPathNode:
 
-		root_node: fssDirNode = fssDirNode(name='schema_root')
+		root_node: DirPathNode = DirPathNode(name='schema_root')
 
 		current_node = root_node
 		node_depth = 0
@@ -33,24 +33,24 @@ class Parser():
 		for line_num, line in enumerate(schema.split('\n')):
 			indentation = self._indentation_count(line)
 			name = line.strip()
-			if(len(name) == 0):
+			if len(name) == 0:
 				continue
 
 			# add node
-			if(indentation == node_depth):
+			if indentation == node_depth:
 				pass
 
 			# dive in
-			elif(indentation > node_depth):
-		
-				if(isinstance(current_node, fssDirNode) and len(current_node.childs) != 0):
+			elif indentation > node_depth:
+
+				if(isinstance(current_node, DirPathNode) and len(current_node.childs) != 0):
 					current_node = current_node.childs[-1]
 				node_depth += 1
 
 			# back out
 			else:
-				while(indentation < node_depth):
-					if(current_node != None):
+				while indentation < node_depth:
+					if current_node is not None:
 						current_node = current_node.parent
 					else:
 						raise Exception('Unexpected None value')
@@ -58,35 +58,35 @@ class Parser():
 
 			necessity = Necessity.OPTIONAL
 
-			if(name.startswith('-')):
+			if name.startswith('-'):
 				name = name.removeprefix('-')
 				necessity = Necessity.FORBIDDEN
 
-			elif(name.startswith('+')):
+			elif name.startswith('+'):
 				name = name.removeprefix('+')
 				necessity = Necessity.REQUIRED
 
-			if(name == '...'):
-				if(necessity != Necessity.OPTIONAL):
+			if name == '...':
+				if necessity != Necessity.OPTIONAL:
 					raise SchemaError(f'Any (...) Cannot be forbidden or required. At line {line_num + 1}')
 
-				node = fssAnyNode()
+				node = AnyPathNode()
 
-			elif(name.endswith('/')):
-				node = fssDirNode(
+			elif name.endswith('/'):
+				node = DirPathNode(
 					name=name.removesuffix('/').strip(),
 					parent=current_node,
 					necessity=necessity,
 				)
 
 			else:
-				node = fssFileNode(
+				node = FilePathNode(
 					name=name.strip(),
 					parent=current_node,
 					necessity=necessity,
 				)
 
-			if(isinstance(current_node, fssDirNode)):
+			if isinstance(current_node, DirPathNode):
 				current_node.childs.append(node)
 			else:
 				raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')

@@ -1,11 +1,11 @@
 import unittest
-from fss.validator import Validator
+from pathschema.validator import Validator
 import tempfile
 import uuid
 from pathlib import Path
 import os
 import shutil
-from fss.fss import ValidationResult
+from pathschema.models import ValidationResult
 
 class TestValidator(unittest.TestCase):
 

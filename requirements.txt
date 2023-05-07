@@ -1,6 +1,3 @@
-PyYAML
-jsonschema
-python-dotenv
-requests
-pylint
+requests==2.30.0
+pylint==2.17.4
 colorama==0.4.6

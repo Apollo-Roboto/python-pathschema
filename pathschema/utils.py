@@ -1,7 +1,10 @@
-from fss.fss import fssNode, fssFileNode, fssDirNode, fssAnyNode, Necessity
 from colorama import Fore, Style
 
-def print_node_tree(node: fssNode, sort=False, _depth=0, _is_last=False, _floating=0):
+from pathschema.models import PathNode, FilePathNode, DirPathNode, AnyPathNode, Necessity
+
+
+
+def print_node_tree(node: PathNode, sort=False, _depth=0, _is_last=False, _floating=0):
 	"""
 	Print a visual representation of the node tree.
 	"""
@@ -9,37 +12,37 @@ def print_node_tree(node: fssNode, sort=False, _depth=0, _is_last=False, _floati
 	decorator = ''
 	for i in range(_depth):
 		if i == _depth-1:
-			if(_is_last):
+			if _is_last:
 				decorator += '└─ '
 			else:
 				decorator += '├─ '
 		else:
-			if(i >= _floating):
+			if i >= _floating:
 				decorator += '│  '
 			else:
 				decorator += '   '
 
 	color = Fore.RESET
-	if(node.necessity == Necessity.FORBIDDEN):
+	if node.necessity == Necessity.FORBIDDEN:
 		color = Fore.RED + Style.BRIGHT
-	if(node.necessity == Necessity.REQUIRED):
+	if node.necessity == Necessity.REQUIRED:
 		color = Fore.GREEN + Style.BRIGHT
 
-	if(isinstance(node, fssDirNode)):
+	if isinstance(node, DirPathNode):
 		decorator += '📁 ' + color
 		print(decorator + node.name + '/' + Style.RESET_ALL)
-	elif(isinstance(node, fssFileNode)):
+	elif isinstance(node, FilePathNode):
 		decorator += '📄 ' + color
 		print(decorator + node.name + Style.RESET_ALL)
-	elif(isinstance(node, fssAnyNode)):
+	elif isinstance(node, AnyPathNode):
 		decorator += '' + color
 		print(decorator + node.name + Style.RESET_ALL)
 
-	if(not isinstance(node, fssDirNode)):
+	if not isinstance(node, DirPathNode):
 		return
-	
+
 	childs = node.childs
-	if(sort == True):
+	if sort:
 		childs = sorted(childs, key=lambda x: x.name)
 
 	for i, child in enumerate(childs):
