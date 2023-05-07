@@ -1,9 +1,6 @@
-from fss.validator import Validator
-from fss.parser import Parser
-from fss.utils import print_node_tree
-from fss.fss import ValidationResult
-import os
-from colorama import Fore, Back, Style
+from pathschema.validator import Validator
+from pathschema.models import ValidationResult
+from colorama import Fore, Style
 from datetime import datetime
 
 

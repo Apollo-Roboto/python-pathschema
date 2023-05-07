@@ -1,9 +1,9 @@
+from typing import Optional
+from enum import Enum
 from dataclasses import dataclass, field
-from typing import Union, Optional
 from pathlib import Path
 import re
 import fnmatch
-from enum import Enum
 
 
 
@@ -15,9 +15,9 @@ class Necessity(Enum):
 
 
 @dataclass
-class fssNode:
+class PathNode:
 	name: str
-	parent: Optional['fssNode'] = None
+	parent: Optional['PathNode'] = None
 	necessity: Necessity = Necessity.OPTIONAL
 
 	@property
@@ -26,10 +26,10 @@ class fssNode:
 			self.name.startswith('"') and
 			self.name.endswith('"')
 		)
-	
+
 	@property
 	def path(self) -> str:
-		if self.parent == None:
+		if self.parent is None:
 			return self.name
 		return self.parent.path + '/' + self.name
 
@@ -41,13 +41,13 @@ class fssNode:
 			The given matches the regex
 			The node is a match all `*`
 		"""
-		
-		if(self.is_regex):
+
+		if self.is_regex:
 			regex = self.name.removeprefix('"').removesuffix('"')
 			match = re.fullmatch(regex, name)
-			
-			return match != None
-		
+
+			return match is not None
+
 		return fnmatch.fnmatch(name, self.name)
 
 	def __eq__(self, other: object) -> bool:
@@ -59,13 +59,15 @@ class fssNode:
 
 	def __str__(self) -> str:
 		return f'node:{self.name}'
-	
+
 	def __repr__(self) -> str:
 		return f'node:{self.name}'
 
+
+
 @dataclass
-class fssDirNode(fssNode):
-	childs: list['fssNode'] = field(default_factory=list)
+class DirPathNode(PathNode):
+	childs: list['PathNode'] = field(default_factory=list)
 
 	def __eq__(self, other: object) -> bool:
 		return (
@@ -76,25 +78,25 @@ class fssDirNode(fssNode):
 			self.childs == other.childs
 		)
 
-	def add_child(self, node: fssNode) -> 'fssDirNode':
+	def add_child(self, node: PathNode) -> 'DirPathNode':
 		node.parent = self
 		self.childs.append(node)
 		return self
 
-	def get_child_by_name(self, name) -> Optional['fssNode']:
+	def get_child_by_name(self, name) -> Optional['PathNode']:
 		for node in self.childs:
 			if node.name == name:
 				return node
 
 		return None
 
-	def get_required_childs(self) -> list[fssNode]:
+	def get_required_childs(self) -> list[PathNode]:
 		return list(filter(lambda x: x.necessity == Necessity.REQUIRED, self.childs))
 
-	def get_forbidden_childs(self) -> list[fssNode]:
+	def get_forbidden_childs(self) -> list[PathNode]:
 		return list(filter(lambda x: x.necessity == Necessity.FORBIDDEN, self.childs))
 
-	def get_matching_child(self, name) -> Optional['fssNode']:
+	def get_matching_child(self, name) -> Optional['PathNode']:
 		"""Get the first matching child, prioritizing forbidden"""
 
 		sorted_childs = sorted(self.childs, key=lambda x: x.necessity == Necessity.FORBIDDEN, reverse=True)
@@ -110,8 +112,10 @@ class fssDirNode(fssNode):
 	def __repr__(self) -> str:
 		return f'node:📁{self.name}/(childs:{len(self.childs)})'
 
+
+
 @dataclass
-class fssFileNode(fssNode):
+class FilePathNode(PathNode):
 
 	def __eq__(self, other: object) -> bool:
 		return (
@@ -126,8 +130,10 @@ class fssFileNode(fssNode):
 	def __repr__(self) -> str:
 		return f'node:📄{self.name}'
 
+
+
 @dataclass
-class fssAnyNode(fssNode):
+class AnyPathNode(PathNode):
 	name: str = '...'
 	necessity: Necessity = Necessity.OPTIONAL
 
@@ -138,19 +144,21 @@ class fssAnyNode(fssNode):
 		return isinstance(other, self.__class__)
 
 	def __str__(self) -> str:
-		return f'node:...'
+		return 'node:...'
 
 	def __repr__(self) -> str:
-		return f'node:...'
+		return 'node:...'
+
+
 
 @dataclass
 class ValidationResult:
-	errors_by_path: dict[Path, list[str]] = field(default_factory=dict) 
+	errors_by_path: dict[Path, list[str]] = field(default_factory=dict)
 
 	def has_error(self):
 
 		for errors in self.errors_by_path.values():
-			if(len(errors) > 0):
+			if len(errors) > 0:
 				return True
 
 		return False
