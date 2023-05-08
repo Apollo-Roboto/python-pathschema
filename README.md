@@ -3,13 +3,13 @@
 # How to use
 
 ```python
-from pathschema.validator import Validator
+from pathschema import validate
 
 schema = "root/"
 
 path_to_validate = './path'
 
-result = Validator().validate(path_to_validate, schema)
+result = validate(path_to_validate, schema)
 
 if(result.has_error()):
 	print('Invalid')
@@ -17,18 +17,16 @@ else:
 	print('Valid')
 ```
 
-|  Symbol | Description  |
-|:-------:|--------------|
-| `/` | Slashes at the end of the name marks this element as a folder
-| `*` | Allows files with any name
-| `*/` | Allows folder with any name
-| `"regex"` | Quotes adds regex validation to the file name
-| `"regex"/` | Quotes with a slash adds regex validation to the folder name
-| `*.ext` | Unix style pattern matching for files
-| `*.ext/` | Unix style pattern matching for folders
-| `...` | Allows any (and nested) files and folder
-| `+` | Makes the file required
-| `-` | Makes the file forbidden
+|  Symbol | Description  | Example |
+|---------|--------------|---------|
+| `/` | Slashes at the end of the name marks this path as a folder | `root/` |
+| `""` | Quotes adds regex validation to the file name | `"file[0-9]{3}"` |
+| `""/` | Quotes with a slash adds regex validation to the folder name | `"folder[0-9]{3}"/` |
+| `*` | Unix style pattern matching for files | `*.txt` |
+| `*/` | Unix style pattern matching for folders | `log_*/` |
+| `...` | Allows any (and nested) files and folder | `...` |
+| `+` | A `+` at the start makes the file or folder required | `+required_file.txt` |
+| `-` | A `-` at the start makes the file or folder forbidden | `-forbidden_folder/` |
 
 # Example Schema Definition
 
