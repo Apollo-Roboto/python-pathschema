@@ -9,6 +9,6 @@ from . import exceptions
 
 
 
-def validate(path: _Union[str, _Path], schema: str, schema_path: _Optional[_Path]=None) -> models.ValidationResult:
+def validate(path: _Union[str, _Path], schema: str) -> models.ValidationResult:
 	validator = Validator()
-	return validator.validate(path, schema, schema_path)
+	return validator.validate(path, schema)
