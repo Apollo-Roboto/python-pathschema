@@ -73,7 +73,7 @@ class Parser():
 
 			if name == self.any_token:
 				if necessity != Necessity.OPTIONAL:
-					raise SchemaError(f'Any ({self.any_token}) Cannot be forbidden or required. At line {line_num + 1}')
+					raise SchemaError(f'Any ({self.any_token}) Cannot be forbidden or required.', line_num+1)
 
 				node = AnyPathNode()
 
@@ -94,6 +94,6 @@ class Parser():
 			if isinstance(current_node, DirPathNode):
 				current_node.childs.append(node)
 			else:
-				raise SchemaError(f'Files cannot have childs. At line {line_num + 1}')
+				raise SchemaError(f'Files cannot have childs.', line_num+1)
 
 		return root_node

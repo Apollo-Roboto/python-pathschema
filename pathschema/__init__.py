@@ -10,5 +10,7 @@ from . import exceptions
 
 
 def validate(path: _Union[str, _Path], schema: str) -> models.ValidationResult:
+	"""Validate a directory against a path schema"""
+
 	validator = Validator()
 	return validator.validate(path, schema)
