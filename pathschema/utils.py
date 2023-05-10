@@ -4,39 +4,10 @@ from pathschema.models import PathNode, FilePathNode, DirPathNode, AnyPathNode, 
 
 
 
-def print_node_tree(node: PathNode, sort=False, _depth=0, _is_last=False, _floating=0):
+def print_node_tree(node: PathNode, sort=False, prefix=''):
 	"""
 	Print a visual representation of the node tree.
 	"""
-
-	decorator = ''
-	for i in range(_depth):
-		if i == _depth-1:
-			if _is_last:
-				decorator += '└─ '
-			else:
-				decorator += '├─ '
-		else:
-			if i >= _floating:
-				decorator += '│  '
-			else:
-				decorator += '   '
-
-	color = Fore.RESET
-	if node.necessity == Necessity.FORBIDDEN:
-		color = Fore.RED + Style.BRIGHT
-	if node.necessity == Necessity.REQUIRED:
-		color = Fore.GREEN + Style.BRIGHT
-
-	if isinstance(node, DirPathNode):
-		decorator += '📁 ' + color
-		print(decorator + node.name + '/' + Style.RESET_ALL)
-	elif isinstance(node, FilePathNode):
-		decorator += '📄 ' + color
-		print(decorator + node.name + Style.RESET_ALL)
-	elif isinstance(node, AnyPathNode):
-		decorator += '' + color
-		print(decorator + node.name + Style.RESET_ALL)
 
 	if not isinstance(node, DirPathNode):
 		return
@@ -46,10 +17,40 @@ def print_node_tree(node: PathNode, sort=False, _depth=0, _is_last=False, _float
 		childs = sorted(childs, key=lambda x: x.name)
 
 	for i, child in enumerate(childs):
-		print_node_tree(
-			child,
-			_depth=_depth + 1,
-			_is_last=(i == len(node.childs)-1),
-			sort=sort,
-			_floating = (_floating + 1) if _is_last else _floating
-		)
+
+		color = Fore.RESET
+		match(child.necessity):
+			case Necessity.REQUIRED:
+				color = Fore.RED + Style.BRIGHT
+			case Necessity.FORBIDDEN:
+				color = Fore.GREEN + Style.BRIGHT
+
+		if i == len(childs) - 1:
+
+			if isinstance(child, DirPathNode):
+				print(f'{prefix}╰── 📁 {color}{child.name}/{Style.RESET_ALL}')
+				print_node_tree(child, sort, prefix + "    ")
+				continue
+
+			if isinstance(child, FilePathNode):
+				print(f'{prefix}╰── 📄 {color}{child.name}{Style.RESET_ALL}')
+				continue
+
+			if isinstance(child, AnyPathNode):
+				print(f'{prefix}╰── {color}{child.name}{Style.RESET_ALL}')
+				continue
+
+		else:
+
+			if isinstance(child, DirPathNode):
+				print(f'{prefix}├── 📁 {color}{child.name}/{Style.RESET_ALL}')
+				print_node_tree(child, sort, prefix + "│   ")
+				continue
+
+			if isinstance(child, FilePathNode):
+				print(f'{prefix}├── 📄 {color}{child.name}{Style.RESET_ALL}')
+				continue
+
+			if isinstance(child, AnyPathNode):
+				print(f'{prefix}├── {color}{child.name}{Style.RESET_ALL}')
+				continue
