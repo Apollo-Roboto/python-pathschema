@@ -1,5 +1,9 @@
 # File System Schema
 
+```bash
+pip install pathschema
+```
+
 # How to use
 
 ```python
@@ -27,6 +31,32 @@ else:
 | `...` | Allows any (and nested) files and folder | `...` |
 | `+` | A `+` at the start makes the file or folder required | `+required_file.txt` |
 | `-` | A `-` at the start makes the file or folder forbidden | `-forbidden_folder/` |
+
+## Command line
+
+pathschema can be used directly in the command line.
+
+```bash
+python -m pathschema path/to/schema.txt path/to/dir/to/validate
+```
+
+# Development
+
+Installing
+```bash
+python -m build
+python -m pip install -e .
+```
+
+Running tests
+```bash
+python -m unittest discover -v -s ./tests -p test_*.py
+```
+
+Command line
+```bash
+python ./pathschema/ ./tests/experimentations/test_schema.txt ./tests/experimentations/test_directory_ok
+```
 
 # Example Schema Definition
 
