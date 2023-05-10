@@ -88,7 +88,7 @@ class TestParse(unittest.TestCase):
 
 		with self.assertRaises(SchemaError) as e:
 			Parser().schema_to_node_tree(schema)
-		self.assertRegex(str(e.exception), r'Files cannot have childs. At line \d+')
+		self.assertRegex(str(e.exception), r'Files cannot have childs. \(.+ line \d+\)')
 
 	def test_schema_to_node_tree_all_pass(self):
 		schema =  'Assets/\n'

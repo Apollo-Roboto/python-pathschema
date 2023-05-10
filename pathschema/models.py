@@ -8,6 +8,7 @@ import fnmatch
 
 
 class Necessity(Enum):
+	"""Marks the necessity of a path"""
 	OPTIONAL = 0
 	REQUIRED = 1
 	FORBIDDEN = 2
@@ -16,6 +17,8 @@ class Necessity(Enum):
 
 @dataclass
 class PathNode:
+	"""A schema path node"""
+
 	name: str
 	parent: Optional['PathNode'] = None
 	necessity: Necessity = Necessity.OPTIONAL
@@ -67,6 +70,8 @@ class PathNode:
 
 @dataclass
 class DirPathNode(PathNode):
+	"""A schema directory path. Can hold multiple schema nodes"""
+
 	childs: list['PathNode'] = field(default_factory=list)
 
 	def __eq__(self, other: object) -> bool:
@@ -116,6 +121,7 @@ class DirPathNode(PathNode):
 
 @dataclass
 class FilePathNode(PathNode):
+	"""A schema file path"""
 
 	def __eq__(self, other: object) -> bool:
 		return (
@@ -134,6 +140,8 @@ class FilePathNode(PathNode):
 
 @dataclass
 class AnyPathNode(PathNode):
+	"""A schema any path"""
+
 	name: str = '...'
 	necessity: Necessity = Necessity.OPTIONAL
 
@@ -153,6 +161,8 @@ class AnyPathNode(PathNode):
 
 @dataclass
 class ValidationResult:
+	"""Holds all errors returned by a validation"""
+
 	errors_by_path: dict[Path, list[str]] = field(default_factory=dict)
 
 	def has_error(self):

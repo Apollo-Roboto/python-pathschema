@@ -1,6 +1,6 @@
-from colorama import Fore, Style
-from pathlib import Path
 import argparse
+from pathlib import Path
+from colorama import Fore, Style
 
 from pathschema import validate
 from pathschema.models import ValidationResult
@@ -41,6 +41,7 @@ def main(args):
 
 
 def print_results(results: ValidationResult, errors_only=False):
+	"""Prints the validation results to the console in a human readable way"""
 
 	print()
 
@@ -54,7 +55,7 @@ def print_results(results: ValidationResult, errors_only=False):
 			print(f'{Fore.RED}FAIL  ', end='')
 		else:
 			if errors_only : continue
-			print(f'  OK  ', end='')
+			print('  OK  ', end='')
 
 		print(f'{path}{Style.RESET_ALL}')
 

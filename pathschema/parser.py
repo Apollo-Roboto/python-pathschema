@@ -7,6 +7,7 @@ illegalCharacters = ['\\', '/', '?', '*', ':', '|', '"', '<', '>']
 
 
 class Parser():
+	"""Parses the path schema definition"""
 
 	indentation_token = '\t'
 	directory_token = '/'
