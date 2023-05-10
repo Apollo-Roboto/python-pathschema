@@ -8,6 +8,7 @@ from pathschema.models import DirPathNode, FilePathNode, PathNode, ValidationRes
 
 
 class Validator():
+	"""Validate a path against a path schema"""
 
 	def __init__(self):
 		pass
