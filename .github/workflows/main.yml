@@ -1,13 +1,14 @@
-name: Python
+name: Build and Test
 
 on:
   push:
     branches: ['main']
-  workflow_dispatch:
+  pull_request:
+    branches: ['main']
 
 jobs:
 
-  build:
+  buildAndTest:
     name: Build And Test
     runs-on: ubuntu-latest
 
@@ -31,27 +32,3 @@ jobs:
 
       - name: Tests
         run: python -m unittest discover -v -s ./tests -p test_*.py
-
-  upload:
-    if: ${{ false }}
-    needs: [ build ]
-    name: Upload Package
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install Build Dependencies
-        run: python -m pip install build twine
-
-      - name: Build
-        run: python -m build
-
-      - name: Publish to PyPI
-        run: |
-          python -m twine upload ./dist/* \
-            --username __token__ \
-            --password ${{ secrets.PYPI_API_TOKEN }}
