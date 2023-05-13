@@ -1,5 +1,7 @@
 # Path Schema
 
+![PyPi Version](https://img.shields.io/pypi/v/pathschema.svg) ![PyPI Python Version](https://img.shields.io/pypi/pyversions/pathschema.svg?logo=python&logoColor=gold) ![License MIT](https://img.shields.io/pypi/l/pathschema)
+
 ```bash
 pip install pathschema
 ```
