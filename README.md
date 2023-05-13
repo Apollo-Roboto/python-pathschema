@@ -1,4 +1,4 @@
-# File System Schema
+# Path Schema
 
 ```bash
 pip install pathschema
@@ -9,9 +9,12 @@ pip install pathschema
 ```python
 from pathschema import validate
 
-schema = "root/"
+schema = ""
 
 path_to_validate = './path'
+
+with open('path/to/schema.txt', 'r') as f:
+	schema = f.read()
 
 result = validate(path_to_validate, schema)
 
@@ -40,10 +43,26 @@ pathschema can be used directly in the command line.
 python -m pathschema path/to/schema.txt path/to/dir/to/validate
 ```
 
+Argument details:
+```txt
+usage: __main__.py [-h] [--errors-only] schema directory
+
+Validate a directory against a schema
+
+positional arguments:
+  schema         Path to schema file
+  directory      Path to directory to validate
+
+options:
+  -h, --help     show this help message and exit
+  --errors-only  Only show errors
+```
+
 # Development
 
 Installing
 ```bash
+python -m pip install -r ./requirements.txt
 python -m build
 python -m pip install -e .
 ```
@@ -53,7 +72,7 @@ Running tests
 python -m unittest discover -v -s ./tests -p test_*.py
 ```
 
-Command line
+Command line without installing
 ```bash
 python ./pathschema/ ./tests/experimentations/test_schema.txt ./tests/experimentations/test_directory_ok
 ```
