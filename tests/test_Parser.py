@@ -137,3 +137,20 @@ class TestParse(unittest.TestCase):
 		print_node_tree(returned_tree)
 
 		self.assertEqual(expected_tree, returned_tree)
+
+	def test_schema_to_node_comment_ignored_pass(self):
+		schema =  'Assets/\n'
+		schema += '\t# comment!\n'
+		schema += '\t*.txt\n'
+		
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(FilePathNode(name='*.txt'))
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)

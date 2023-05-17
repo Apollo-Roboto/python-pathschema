@@ -11,7 +11,7 @@ pip install pathschema
 ```python
 from pathschema import validate
 
-schema = ""
+schema = ''
 
 path_to_validate = './path'
 
