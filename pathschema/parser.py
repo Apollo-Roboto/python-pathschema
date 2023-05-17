@@ -14,6 +14,7 @@ class Parser():
 	required_token = '+'
 	forbidden_token = '-'
 	any_token = '...'
+	comment_token = '#'
 
 	def _detect_indentation(self):
 		raise NotImplementedError()
@@ -39,6 +40,10 @@ class Parser():
 			indentation = self._indentation_count(line)
 			name = line.strip()
 			if len(name) == 0:
+				continue
+
+			# comments get ignored
+			if name.startswith(self.comment_token):
 				continue
 
 			# add node
