@@ -32,15 +32,15 @@ class TestParse(unittest.TestCase):
 
 	def test_schema_to_node_tree_complex_dir_pass(self):
 		schema =  'Assets/\n'
-		schema += '\tGlobals/\n'
-		schema += '\t\tMaterials/\n'
-		schema += '\t\tTextures/\n'
-		schema += '\t\tModels/\n'
-		schema += '\t\tScripts/\n'
-		schema += '\t\tAnimations/\n'
-		schema += '\tPrefabs/\n'
-		schema += '\tCommunityAssets/\n'
-		schema += '\tScenes/\n'
+		schema += '  Globals/\n'
+		schema += '    Materials/\n'
+		schema += '    Textures/\n'
+		schema += '    Models/\n'
+		schema += '    Scripts/\n'
+		schema += '    Animations/\n'
+		schema += '  Prefabs/\n'
+		schema += '  CommunityAssets/\n'
+		schema += '  Scenes/\n'
 
 		returned_tree = Parser().schema_to_node_tree(schema)
 		
@@ -62,9 +62,9 @@ class TestParse(unittest.TestCase):
 
 	def test_schema_to_node_tree_complex_dir_and_files_pass(self):
 		schema =  'Textures/\n'
-		schema +=  '\trobot.png\n'
+		schema +=  '  robot.png\n'
 		schema +=  'Models/\n'
-		schema +=  '\trobot.fbx\n'
+		schema +=  '  robot.fbx\n'
 
 		returned_tree = Parser().schema_to_node_tree(schema)
 
@@ -83,8 +83,8 @@ class TestParse(unittest.TestCase):
 
 	def test_schema_to_node_tree_file_with_child_exception(self):
 		schema =  'Assets/\n'
-		schema += '\tfile.txt\n'
-		schema += '\t\toh_no.txt\n'
+		schema += '  file.txt\n'
+		schema += '    oh_no.txt\n'
 
 		with self.assertRaises(SchemaError) as e:
 			Parser().schema_to_node_tree(schema)
@@ -92,7 +92,7 @@ class TestParse(unittest.TestCase):
 
 	def test_schema_to_node_tree_all_pass(self):
 		schema =  'Assets/\n'
-		schema += '\t...\n'
+		schema += '  ...\n'
 
 		returned_tree = Parser().schema_to_node_tree(schema)
 
@@ -108,7 +108,7 @@ class TestParse(unittest.TestCase):
 
 	def test_schema_to_node_tree_forbiden_pass(self):
 		schema =  'Assets/\n'
-		schema += '\t-*.md\n'
+		schema += '  -*.md\n'
 		
 		returned_tree = Parser().schema_to_node_tree(schema)
 
@@ -124,7 +124,7 @@ class TestParse(unittest.TestCase):
 
 	def test_schema_to_node_tree_required_pass(self):
 		schema =  'Assets/\n'
-		schema += '\t+*.md\n'
+		schema += '  +*.md\n'
 		
 		returned_tree = Parser().schema_to_node_tree(schema)
 
@@ -140,14 +140,77 @@ class TestParse(unittest.TestCase):
 
 	def test_schema_to_node_comment_ignored_pass(self):
 		schema =  'Assets/\n'
-		schema += '\t# comment!\n'
-		schema += '\t*.txt\n'
+		schema += '  # comment!\n'
+		schema += '  *.txt\n'
 		
 		returned_tree = Parser().schema_to_node_tree(schema)
 
 		expected_tree = DirPathNode(name='schema_root') \
 			.add_child(DirPathNode(name='Assets')
 				.add_child(FilePathNode(name='*.txt'))
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)
+
+	def test_schema_to_node_two_space_indentation_pass(self):
+		schema =  'Assets/\n'
+		schema += '  *.txt\n'
+		schema += '  Textures/\n'
+		schema += '    *.png\n'
+		
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(FilePathNode(name='*.txt'))
+				.add_child(DirPathNode(name='Textures')
+					.add_child(FilePathNode(name='*.png'))
+				)
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)
+
+	def test_schema_to_node_four_space_indentation_pass(self):
+		schema =  'Assets/\n'
+		schema += '    *.txt\n'
+		schema += '    Textures/\n'
+		schema += '        *.png\n'
+		
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(FilePathNode(name='*.txt'))
+				.add_child(DirPathNode(name='Textures')
+					.add_child(FilePathNode(name='*.png'))
+				)
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)
+		
+	def test_schema_to_node_tab_indentation_pass(self):
+		schema =  'Assets/\n'
+		schema += '\t*.txt\n'
+		schema += '\tTextures/\n'
+		schema += '\t\t*.png\n'
+		
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(FilePathNode(name='*.txt'))
+				.add_child(DirPathNode(name='Textures')
+					.add_child(FilePathNode(name='*.png'))
+				)
 			)
 
 		print_node_tree(expected_tree)

@@ -16,20 +16,38 @@ class Parser():
 	any_token = '...'
 	comment_token = '#'
 
-	def _detect_indentation(self):
-		raise NotImplementedError()
+	def _detect_indentation(self, schema: str) -> str:
+		for line in schema.split('\n'):
+			
+			leading_whitespace = len(line) - len(line.lstrip())
+
+			# impossible to evaluate if no leading whitespace, continue to next line
+			if leading_whitespace == 0:
+				continue
+			
+			# indentation is tabs
+			if line.startswith('\t'):
+				return '\t' * leading_whitespace
+			
+			# indentation is spaces
+			if line.startswith(' '):
+				return ' ' * leading_whitespace
+		
+		# if not evaluated, assume default
+		return self.indentation_token
 
 	def _indentation_count(self,  string: str):
-		num_of_indentation = 0
-		for character in string:
-			if character == self.indentation_token:
-				num_of_indentation += 1
-			else:
-				break
 
-		return num_of_indentation
+		if len(self.indentation_token) == 0:
+			return 0
+
+		character_difference = len(string) - len(string.lstrip())
+
+		return int(character_difference / len(self.indentation_token))
 
 	def schema_to_node_tree(self, schema: str) -> DirPathNode:
+
+		self.indentation_token = self._detect_indentation(schema)
 
 		root_node: DirPathNode = DirPathNode(name='schema_root')
 
