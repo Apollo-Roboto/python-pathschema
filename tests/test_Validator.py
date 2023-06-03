@@ -75,15 +75,15 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_only_simple_pass(self):
 		schema =  'Assets/\n'
-		schema += '\tGlobals/\n'
-		schema += '\t\tMaterials/\n'
-		schema += '\t\tTextures/\n'
-		schema += '\t\tModels/\n'
-		schema += '\t\tScripts/\n'
-		schema += '\t\tAnimations/\n'
-		schema += '\tPrefabs/\n'
-		schema += '\tCommunityAssets/\n'
-		schema += '\tScenes/\n'
+		schema += '  Globals/\n'
+		schema += '    Materials/\n'
+		schema += '    Textures/\n'
+		schema += '    Models/\n'
+		schema += '    Scripts/\n'
+		schema += '    Animations/\n'
+		schema += '  Prefabs/\n'
+		schema += '  CommunityAssets/\n'
+		schema += '  Scenes/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -103,15 +103,15 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_only_simple_fail(self):
 		schema =  'Assets/\n'
-		schema += '\tGlobals/\n'
-		schema += '\t\tMaterials/\n'
-		schema += '\t\tTextures/\n'
-		schema += '\t\tModels/\n'
-		schema += '\t\tScripts/\n'
-		schema += '\t\tAnimations/\n'
-		schema += '\tPrefabs/\n'
-		schema += '\tCommunityAssets/\n'
-		schema += '\tScenes/\n'
+		schema += '  Globals/\n'
+		schema += '    Materials/\n'
+		schema += '    Textures/\n'
+		schema += '    Models/\n'
+		schema += '    Scripts/\n'
+		schema += '    Animations/\n'
+		schema += '  Prefabs/\n'
+		schema += '  CommunityAssets/\n'
+		schema += '  Scenes/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -131,9 +131,9 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_and_files_simple_pass(self):
 		schema =  'Textures/\n'
-		schema += '\trobot.png\n'
+		schema += '  robot.png\n'
 		schema += 'Models/\n'
-		schema += '\trobot.fbx\n'
+		schema += '  robot.fbx\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -150,9 +150,9 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_and_files_simple_fail(self):
 		schema =  'Textures/\n'
-		schema += '\trobot.png\n'
+		schema += '  robot.png\n'
 		schema += 'Models/\n'
-		schema += '\trobot.fbx\n'
+		schema += '  robot.fbx\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -171,7 +171,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_star_file_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t*\n'
+		schema += '  *\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -184,7 +184,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_regex_file_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t".*\\.md"\n'
+		schema += '  ".*\\.md"\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -197,7 +197,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_regex_file_fail(self):
 		schema =  'Notes/\n'
-		schema += '\t".*\\.md"\n'
+		schema += '  ".*\\.md"\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -210,7 +210,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_star_dir_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t*/\n'
+		schema += '  */\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -222,7 +222,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_regex_dir_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t"\\d+"/\n'
+		schema += '  "\\d+"/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -234,7 +234,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_regex_dir_fail(self):
 		schema =  'Notes/\n'
-		schema += '\t"\\d"/\n'
+		schema += '  "\\d"/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -246,11 +246,11 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_star_and_dir_pass(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t".*\\.png"\n'
-		schema += '\tModels/\n'
-		schema += '\t\t".*\\.fbx"\n'
-		schema += '\t*\n'
+		schema += '  Textures/\n'
+		schema += '    ".*\\.png"\n'
+		schema += '  Models/\n'
+		schema += '    ".*\\.fbx"\n'
+		schema += '  *\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -269,11 +269,11 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_star_and_dir_fail(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t".*\\.png"\n'
-		schema += '\tModels/\n'
-		schema += '\t\t".*\\.fbx"\n'
-		schema += '\t*\n'
+		schema += '  Textures/\n'
+		schema += '    ".*\\.png"\n'
+		schema += '  Models/\n'
+		schema += '    ".*\\.fbx"\n'
+		schema += '  *\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -292,7 +292,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_any_pass(self):
 		schema =  'Assets/\n'
-		schema += '\t...\n'
+		schema += '  ...\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -311,8 +311,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_pattern_star_pass(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t*.png\n'
+		schema += '  Textures/\n'
+		schema += '    *.png\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -329,8 +329,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_pattern_star_fail(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t*.png\n'
+		schema += '  Textures/\n'
+		schema += '    *.png\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -347,7 +347,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_pattern_question_mark_pass(self):
 		schema =  'Folder/\n'
-		schema += '\tFile_?.txt\n'
+		schema += '  File_?.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -366,7 +366,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_pattern_question_mark_fail(self):
 		schema =  'Folder/\n'
-		schema += '\tFile_?.txt\n'
+		schema += '  File_?.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -380,8 +380,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_forbiden_pass(self):
 		schema =  'Folder/\n'
-		schema += '\t-File.txt\n'
-		schema += '\tAnAcceptableFile.txt\n'
+		schema += '  -File.txt\n'
+		schema += '  AnAcceptableFile.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -395,7 +395,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_forbiden_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t-File.txt\n'
+		schema += '  -File.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -409,8 +409,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_forbiden_with_start_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t-File.txt\n'
-		schema += '\t*.txt\n'
+		schema += '  -File.txt\n'
+		schema += '  *.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -424,8 +424,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_forbiden_with_start2_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t*.txt\n'
-		schema += '\t-File.txt\n'
+		schema += '  *.txt\n'
+		schema += '  -File.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -439,8 +439,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_required_pass(self):
 		schema =  'Folder/\n'
-		schema += '\t+File.txt\n'
-		schema += '\tSomeOtherFile.txt\n'
+		schema += '  +File.txt\n'
+		schema += '  SomeOtherFile.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -454,8 +454,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_required_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t+File.txt\n'
-		schema += '\tSomeOtherFile.txt\n'
+		schema += '  +File.txt\n'
+		schema += '  SomeOtherFile.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -469,8 +469,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_required_with_start_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t+File.txt\n'
-		schema += '\t*.txt\n'
+		schema += '  +File.txt\n'
+		schema += '  *.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -484,8 +484,8 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_required_with_start2_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t*.txt\n'
-		schema += '\t+File.txt\n'
+		schema += '  *.txt\n'
+		schema += '  +File.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
