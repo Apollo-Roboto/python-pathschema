@@ -217,3 +217,27 @@ class TestParse(unittest.TestCase):
 		print_node_tree(returned_tree)
 
 		self.assertEqual(expected_tree, returned_tree)
+
+	def test_schema_to_node_inconsistent_indentation_one_fail(self):
+		"""Uses 4 spaces instead of 2"""
+		schema =  'Assets/\n'
+		schema += '  *.txt\n'
+		schema += '  Textures/\n'
+		schema += '      *.png\n'
+		schema += '      *.jpg\n'
+		
+		with self.assertRaises(SchemaError) as e:
+			Parser().schema_to_node_tree(schema)
+		self.assertRegex(str(e.exception), r'Inconsistent indentation. \(.+ line \d+\)')
+
+	def test_schema_to_node_inconsistent_indentation_two_fail(self):
+		"""Uses 3 spaces instead of 2"""
+		schema =  'Assets/\n'
+		schema += '  *.txt\n'
+		schema += '  Textures/\n'
+		schema += '     *.png\n'
+		schema += '     *.jpg\n'
+		
+		with self.assertRaises(SchemaError) as e:
+			Parser().schema_to_node_tree(schema)
+		self.assertRegex(str(e.exception), r'Inconsistent indentation. \(.+ line \d+\)')

@@ -18,6 +18,10 @@ class Parser():
 
 	def _detect_indentation(self, schema: str) -> str:
 		for line in schema.split('\n'):
+
+			# ignore empty lines
+			if not line.strip():
+				continue
 			
 			leading_whitespace = len(line) - len(line.lstrip())
 
@@ -36,14 +40,21 @@ class Parser():
 		# if not evaluated, assume default
 		return self.indentation_token
 
-	def _indentation_count(self,  string: str):
+	def _indentation_count(self,  string: str, line_num: int) -> int:
+		"""Counts the indentation at the beginning of a string using the indentation token"""
+		tmp_str = string
+		count = 0
+		
+		while tmp_str.startswith(self.indentation_token):
+			count += 1
+			tmp_str = tmp_str[len(self.indentation_token):]
 
-		if len(self.indentation_token) == 0:
-			return 0
-
-		character_difference = len(string) - len(string.lstrip())
-
-		return int(character_difference / len(self.indentation_token))
+		# if there is still some whitespace
+		# can happen if indentation token is 4 space and there are 3 spaces instead
+		if len(tmp_str) > len(tmp_str.lstrip()):
+			raise SchemaError('Inconsistent indentation.', line_num)
+		
+		return count
 
 	def schema_to_node_tree(self, schema: str) -> DirPathNode:
 
@@ -53,9 +64,16 @@ class Parser():
 
 		current_node = root_node
 		node_depth = 0
+		last_indentation = 0
 
 		for line_num, line in enumerate(schema.split('\n')):
-			indentation = self._indentation_count(line)
+			indentation = self._indentation_count(line, line_num+1)
+
+			if indentation > last_indentation + 1:
+				raise SchemaError('Inconsistent indentation.', line_num+1)
+
+			last_indentation = indentation
+			
 			name = line.strip()
 			if len(name) == 0:
 				continue
