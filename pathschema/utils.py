@@ -19,11 +19,11 @@ def print_node_tree(node: PathNode, sort=False, prefix=''):
 	for i, child in enumerate(childs):
 
 		color = Fore.RESET
-		match(child.necessity):
-			case Necessity.REQUIRED:
-				color = Fore.RED + Style.BRIGHT
-			case Necessity.FORBIDDEN:
-				color = Fore.GREEN + Style.BRIGHT
+
+		if child.necessity == Necessity.REQUIRED:
+			color = Fore.RED + Style.BRIGHT
+		elif child.necessity == Necessity.FORBIDDEN:
+			color = Fore.GREEN + Style.BRIGHT
 
 		if i == len(childs) - 1:
 

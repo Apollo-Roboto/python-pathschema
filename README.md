@@ -36,6 +36,7 @@ else:
 | `...` | Allows any (and nested) files and folder | `...` |
 | `+` | A `+` at the start makes the file or folder required | `+required_file.txt` |
 | `-` | A `-` at the start makes the file or folder forbidden | `-forbidden_folder/` |
+| `#` | Write a comment | `# cool comment` |
 
 ## Command line
 
