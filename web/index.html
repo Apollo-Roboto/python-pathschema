@@ -1,37 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Document</title>
-	<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-	<script defer src="https://pyscript.net/latest/pyscript.js"></script>
-</head>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+		<!-- <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
+	</head>
 
-<body>
-	<py-config>
-		packages = ["matplotlib", "pandas"]
-	</py-config>
-	
-	<button py-click="current_time()" id="get-time" class="py-button">Get current time</button>
-	<p id="current-time"></p>
-	
-	<py-script>
-		from datetime import datetime
+	<body>
+		<py-config>
+			packages = ["matplotlib", "pandas", "pathschema==0.2.0"]
+		</py-config>
+
+		<div>
+			<textarea id="schema-input"></textarea>
+			<p id="schema-parse-error"></p>
+		</div>
+
+		<div>
+			<div>HERE LIES THE TREE</div>
+			<p id="validation-error"></p>
+		</div>
 		
-		def current_time():
-			now = datetime.now()
+		<button py-click="do_the_validation()" id="do-the-validation" class="py-button">Do the validation</button>
+		<button py-click="current_time()" id="get-time" class="py-button">Get current time</button>
+		<p id="current-time"></p>
+		
+		
+		
+		<py-script>
+			from pathlib import Path
+			from datetime import datetime
+			from pathschema import validate
+
+			schema_input_element = Element('schema-input')
+			schema_parse_error_element = Element('schema-parse-error')
+			validation_error_element = Element('validation-error')
 			
-			# Get paragraph element by id
-			paragraph = Element('current-time')
+			def current_time():
+				now = datetime.now()
+				
+				# Get paragraph element by id
+				paragraph = Element('current-time')
 
-			# Add current time to the paragraph element
-			paragraph.write(now.strftime('%Y-%m-%d %H:%M:%S'))
+				# Add current time to the paragraph element
+				paragraph.write(now.strftime('%Y-%m-%d %H:%M:%S'))
 
-	</py-script>
+			def do_the_validation():
 
-</body>
+				results = None
+
+				try:
+
+					schema = schema_input_element.value
+
+					# TODO this wont work
+					results = validate(Path(''), schema)
+
+				except SchemaError as e:
+					# Error in the user schema
+					schema_parse_error_element.write(str(e))
+					return
+				except Exception as e:
+					# Other exceptions
+					print(str(e))
+					return
+
+				if(results.has_error()):
+					show_validation_errors(results)
+				else:
+					clear_validation_errors()
+			
+			def clear_validation_errors():
+				validation_error_element.clear()
+			
+			def show_validation_errors(errors):
+				text = ''
+
+				for path, errors in results.errors_by_path.items():
+					if(len(errors) > 0 ):
+						text += 'FAIL  '
+					else:
+						text += 'OK    '
+
+					text += path + '\n'
+					
+					for error in errors:
+						text += '        ' + error + '\n'
+				
+				validation_error_element.write(text)
+
+		</py-script>
+
+		<div id="ko-fi-button">
+			<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
+		</div>
+
+	</body>
 
 </html>
