@@ -61,12 +61,13 @@ def print_results(results: ValidationResult, errors_only=False):
 
 		for error in errors:
 			print(f'{Fore.RED}\t{error}{Style.RESET_ALL}')
-	
+
+	# spacing
 	print()
 
 	score = f'{num_of_path-num_of_errors}/{num_of_path}'
 
-	print(f'Valid files: {score}')
+	print(f'Valid paths: {score}')
 
 	if(num_of_errors > 0):
 		print(f'{Fore.RED}{Style.BRIGHT}FAILED{Style.RESET_ALL}')
