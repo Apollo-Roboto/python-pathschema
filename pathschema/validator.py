@@ -76,17 +76,17 @@ class Validator():
 
 				# if there is no match
 				if matching_node is None:
-					results.add_error(path, 'No match found')
+					results.add_error(path, 'Path not allowed')
 					continue
 
 				# if folder is forbidden
 				if(isinstance(matching_node, DirPathNode) and matching_node.necessity == Necessity.FORBIDDEN):
-					results.add_error(path, 'Folder Forbidden')
+					results.add_error(path, 'Folder forbidden')
 					continue
 
 				# if file is forbidden
 				if(isinstance(matching_node, FilePathNode) and matching_node.necessity == Necessity.FORBIDDEN):
-					results.add_error(path, 'File Forbidden')
+					results.add_error(path, 'File forbidden')
 					continue
 
 				sub_results = self._validation_helper(path, matching_node)
