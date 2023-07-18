@@ -6,31 +6,67 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
-		<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+		
+		<!-- JQuery -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+		
+		<!-- Pyscript -->
 		<!-- <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
+		<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+
+		<!-- jstree -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+		<!-- they have an interresting style over there -->
+		<!-- https://preview.keenthemes.com/html/metronic/docs/general/jstree/overview -->
+
+		<style>
+			#jstree-container .folder { background:url('https://www.jstree.com/demo_filebrowser/file_sprite.png') right bottom no-repeat; }
+			#jstree-container .file { background:url('https://www.jstree.com/demo_filebrowser/file_sprite.png') 0 0 no-repeat; }
+		</style>
 	</head>
 
 	<body>
-		<py-config>
-			packages = ["matplotlib", "pandas", "pathschema==0.2.0"]
-		</py-config>
 
 		<div>
-			<textarea id="schema-input"></textarea>
+			<textarea id="schema-input" placeholder="Write the schema here"></textarea>
 			<p id="schema-parse-error"></p>
 		</div>
 
 		<div>
-			<div>HERE LIES THE TREE</div>
+			<div id="jstree-container">
+				<ul>
+					<li data-jstree='{"type":"default"}'>
+						root
+						<ul>
+							<li data-jstree='{"type":"file"}'>file1</li>
+							<li data-jstree='{"type":"file"}'>file2</li>
+							<li data-jstree='{"type":"file"}'>file3</li>
+							<li data-jstree='{"type":"default"}'>
+								folder
+								<ul>
+									<li data-jstree='{"type":"default"}'>asdwasd</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
 			<p id="validation-error"></p>
 		</div>
-		
+
 		<button py-click="do_the_validation()" id="do-the-validation" class="py-button">Do the validation</button>
 		<button py-click="current_time()" id="get-time" class="py-button">Get current time</button>
+		<button onclick="testButtonClick()">test</button>
 		<p id="current-time"></p>
-		
-		
-		
+
+		<div id="ko-fi-button">
+			<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
+		</div>
+
+		<py-config>
+			packages = ["matplotlib", "pandas", "pathschema==0.2.0"]
+		</py-config>
 		<py-script>
 			from pathlib import Path
 			from datetime import datetime
@@ -95,9 +131,101 @@
 
 		</py-script>
 
-		<div id="ko-fi-button">
-			<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
-		</div>
+		<script>
+			$(function () {
+				$('#jstree-container').jstree({
+					'core': {
+						'check_callback' : function(o, n, p, i, m) {
+							// operation, node, node_parent, node_position, more
+							
+							if(m && m.dnd && m.pos !== 'i') { return false; }
+							if(o === "move_node" || o === "copy_node") {
+								if(this.get_node(n).parent === this.get_node(p).id) { return false; }
+							}
+
+							// prevent the root node from being deleted
+							if (o === 'delete_node' && n.id === 'j1_1') {
+								return false;
+							}
+							return true;
+						},
+						'themes' : {
+							'responsive' : false,
+							'variant' : 'small',
+							'stripes' : true
+						},
+					},
+					'sort' : function(a, b) {
+						return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
+					},
+					'contextmenu' : {
+						'items' : function(node) {
+							var tmp = $.jstree.defaults.contextmenu.items();
+							delete tmp.create.action;
+							tmp.create.label = "New";
+							tmp.create.submenu = {
+								"create_folder" : {
+									"separator_after" : true,
+									"label" : "Folder",
+									"action" : function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "default" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								},
+								"create_file" : {
+									"label" : "File",
+									"action" : function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "file" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								}
+							};
+							if(this.get_type(node) === "file") {
+								delete tmp.create;
+							}
+							return tmp;
+						}
+					},
+					'types' : {
+						'default' : { 'icon' : 'folder' },
+						'file' : { 'valid_children' : [], 'icon' : 'file' }
+					},
+					'unique' : {
+						'duplicate' : function (name, counter) {
+							return name + ' ' + counter;
+						}
+					},
+					'plugins' : ['state', 'dnd', 'sort', 'types', 'contextmenu', 'unique']
+				});
+
+				$('#jstree-container').on('changed.jstree', function (e, data) {
+					console.log(data.selected);
+				});
+
+			});
+
+			function printNode(node) {
+				console.log(node.text.trim(), node);
+				if(node.children.length > 0) {
+					node.children.forEach(childId => {
+						const childNode = $('#jstree-container').jstree(true).get_node(childId);
+						printNode(childNode);
+					});
+				}
+			}
+
+			function testButtonClick() {
+				const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
+				printNode(rootNode)
+			}
+
+		</script>
 
 	</body>
 
