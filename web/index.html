@@ -11,7 +11,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
 		
 		<!-- Pyscript -->
-		<!-- <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
+		<script defer src="https://pyscript.net/latest/pyscript.js"></script>
 		<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
 
 		<!-- jstree -->
@@ -55,10 +55,8 @@
 			<p id="validation-error"></p>
 		</div>
 
-		<button py-click="do_the_validation()" id="do-the-validation" class="py-button">Do the validation</button>
-		<button py-click="current_time()" id="get-time" class="py-button">Get current time</button>
-		<button onclick="testButtonClick()">test</button>
-		<p id="current-time"></p>
+		<!-- <button py-click="do_the_validation()" id="do-the-validation" class="py-button">Do the validation</button> -->
+		<button onclick="doTheValidation()" class="py-button">Do the validation</button>
 
 		<div id="ko-fi-button">
 			<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
@@ -68,33 +66,34 @@
 			packages = ["matplotlib", "pandas", "pathschema==0.2.0"]
 		</py-config>
 		<py-script>
+
 			from pathlib import Path
 			from datetime import datetime
-			from pathschema import validate
+			import os
+			import tempfile
+			import shutil
 
+			from pathschema import validate
+			from pathschema.models import DirPathNode
+
+			# elements
 			schema_input_element = Element('schema-input')
 			schema_parse_error_element = Element('schema-parse-error')
 			validation_error_element = Element('validation-error')
-			
-			def current_time():
-				now = datetime.now()
-				
-				# Get paragraph element by id
-				paragraph = Element('current-time')
 
-				# Add current time to the paragraph element
-				paragraph.write(now.strftime('%Y-%m-%d %H:%M:%S'))
+			temp_dir = Path(tempfile.gettempdir())
+			folder_to_validate = 'root'
 
-			def do_the_validation():
+			def validate_the_files_with_schema():
 
 				results = None
 
 				try:
-
+					# get the schema from the input element
 					schema = schema_input_element.value
 
-					# TODO this wont work
-					results = validate(Path(''), schema)
+					# do the validation
+					results = validate(temp_dir / folder_to_validate, schema)
 
 				except SchemaError as e:
 					# Error in the user schema
@@ -109,25 +108,47 @@
 					show_validation_errors(results)
 				else:
 					clear_validation_errors()
+					# TODO: show success?
 			
 			def clear_validation_errors():
 				validation_error_element.clear()
 			
-			def show_validation_errors(errors):
+			def show_validation_errors(results):
 				text = ''
 
 				for path, errors in results.errors_by_path.items():
 					if(len(errors) > 0 ):
 						text += 'FAIL  '
 					else:
-						text += 'OK    '
+						text += '&nbsp;&nbsp;OK    '
 
-					text += path + '\n'
+					text += str(path) + '\n'
 					
 					for error in errors:
-						text += '        ' + error + '\n'
+						text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + error + '\n'
 				
-				validation_error_element.write(text)
+				validation_error_element.clear()
+				for line in text.split('\n'):
+					validation_error_element.write(line, append=True)
+
+
+			def set_folder_to_validate(name):
+				global folder_to_validate
+				folder_to_validate = name
+
+			def create_fake_file(path):
+				print('creating file ' + path)
+				full_path = temp_dir / path
+				os.makedirs(full_path.parent, exist_ok=True)
+				full_path.touch()
+
+			def create_fake_dir(path):
+				print('creating dir ' + path)
+				os.makedirs(temp_dir / path, exist_ok=True)
+
+			def clear_paths():
+				shutil.rmtree(temp_dir)
+
 
 		</py-script>
 
@@ -205,7 +226,7 @@
 				});
 
 				$('#jstree-container').on('changed.jstree', function (e, data) {
-					console.log(data.selected);
+					// console.log(data.selected);
 				});
 
 			});
@@ -220,9 +241,45 @@
 				}
 			}
 
-			function testButtonClick() {
+			function createPathsFromNodes(node, parentName = null) {
+				let name = node.text.trim()
+
+				if(parentName != null) {
+					name = parentName + '/' + name
+				}
+				
+				if(node.type == 'file') {
+					// create the file
+					pyscript.interpreter.globals.get('create_fake_file')(name);
+				}
+				else {
+					// create the directory
+					pyscript.interpreter.globals.get('create_fake_dir')(name);
+				}
+				
+				if(node.children.length > 0) {
+					node.children.forEach(childId => {
+						const childNode = $('#jstree-container').jstree(true).get_node(childId);
+						createPathsFromNodes(childNode, name);
+					});
+				}
+			}
+
+			function doTheValidation() {
+
 				const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
-				printNode(rootNode)
+				
+				// update the name of the folder to validate
+				pyscript.interpreter.globals.get('set_folder_to_validate')(rootNode.text.trim());
+
+				// clear all paths
+				pyscript.interpreter.globals.get('clear_paths')();
+
+				// create all new paths
+				createPathsFromNodes(rootNode)
+				
+				// start the validation
+				pyscript.interpreter.globals.get('validate_the_files_with_schema')();
 			}
 
 		</script>
