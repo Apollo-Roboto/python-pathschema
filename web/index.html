@@ -6,10 +6,10 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
-		
+
 		<!-- JQuery -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-		
+
 		<!-- Pyscript -->
 		<script defer src="https://pyscript.net/latest/pyscript.js"></script>
 		<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
@@ -20,6 +20,8 @@
 		<!-- they have an interresting style over there -->
 		<!-- https://preview.keenthemes.com/html/metronic/docs/general/jstree/overview -->
 
+		<link rel="stylesheet" href="./output.css"/>
+
 		<style>
 			#jstree-container .folder { background:url('https://www.jstree.com/demo_filebrowser/file_sprite.png') right bottom no-repeat; }
 			#jstree-container .file { background:url('https://www.jstree.com/demo_filebrowser/file_sprite.png') 0 0 no-repeat; }
@@ -28,45 +30,126 @@
 
 	<body>
 
+		<!-- github corner -->
 		<div>
-			<textarea id="schema-input" placeholder="Write the schema here"></textarea>
-			<p id="schema-parse-error"></p>
+			<a href="https://github.com/Apollo-Roboto/python-pathschema" class="github-corner" aria-label="View source on GitHub">
+				<svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+					<path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+					<path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+					<path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+				</svg>
+			</a>
+			<style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
 		</div>
 
-		<div>
-			<div id="jstree-container">
-				<ul>
-					<li data-jstree='{"type":"default"}'>
-						root
-						<ul>
-							<li data-jstree='{"type":"file"}'>file1</li>
-							<li data-jstree='{"type":"file"}'>file2</li>
-							<li data-jstree='{"type":"file"}'>file3</li>
-							<li data-jstree='{"type":"default"}'>
-								folder
-								<ul>
-									<li data-jstree='{"type":"default"}'>asdwasd</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-				</ul>
+		<!-- main content -->
+		<div class="mx-auto w-8/12">
+
+			<h1>PathSchema</h1>
+			<p>introduction paragraph here</p>
+
+			<!-- live preview area -->
+			<div>
+				<div class="flex w-full h-96 gap-5">
+					
+					<!-- Schema input box -->
+					<div class="flex-[3] border border-black rounded-lg overflow-hidden">
+						<textarea 
+							id="schema-input"
+							class="rounded-lg resize-none w-full h-full p-3 font-mono overflow-y-scroll scrollbar-thin"
+							placeholder="Write the schema here"
+							autocomplete="off"
+							autocorrect="off"
+							autocapitalize="off"
+							spellcheck="false"></textarea>
+					</div>
+					
+					<!-- path structure creation area -->
+					<div class="flex-[2] border border-black rounded-lg overflow-hidden">
+						<div
+							id="jstree-container"
+							class="rounded-lg h-full p-3 overflow-y-scroll scrollbar-thin">
+							<ul>
+								<li data-jstree='{"type":"default"}'>
+									root
+									<ul>
+										<li data-jstree='{"type":"file"}'>file1.txt</li>
+										<li data-jstree='{"type":"file"}'>file2.txt</li>
+										<li data-jstree='{"type":"file"}'>file3.txt</li>
+										<li data-jstree='{"type":"default"}'>
+											folder
+											<ul>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+				<!-- output box -->
+				<div>
+					<pre id="pathschema-output"></pre>
+				</div>
+
+				<!-- validation button -->
+				<button onclick="doTheValidation()" class="">Do the validation</button>
+
+				<!-- expand all button -->
+				<button onclick="expandAll()">Expand all</button>
+				<!-- collapse all button -->
+				<button onclick="collapseAll()">Collapse all</button>
+
+				<!-- load example dropdown -->
+				<div>
+					<div>
+						<button onclick="alert('not implemented')">Load an Example</button>
+					</div>
+					<div class="hidden">
+						<button>Organized Personal Pictures</button>
+						<button>Unity Project</button>
+						<button>Python Project</button>
+					</div>
+				</div>
 			</div>
-			<p id="validation-error"></p>
-		</div>
 
-		<!-- <button py-click="do_the_validation()" id="do-the-validation" class="py-button">Do the validation</button> -->
-		<button onclick="doTheValidation()" class="py-button">Do the validation</button>
+			<!-- text area -->
+			<div>
+				<h2>How to use</h2>
+				<p>useful things</p>
+			</div>
 
-		<div id="ko-fi-button">
-			<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
+			<!-- ko-fi button -->
+			<div id="ko-fi-button">
+				<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
+			</div>
 		</div>
 
 		<py-config>
 			packages = ["matplotlib", "pandas", "pathschema==0.2.0"]
 		</py-config>
 		<py-script>
-
 			from pathlib import Path
 			from datetime import datetime
 			import os
@@ -78,8 +161,7 @@
 
 			# elements
 			schema_input_element = Element('schema-input')
-			schema_parse_error_element = Element('schema-parse-error')
-			validation_error_element = Element('validation-error')
+			pathschema_output_element = Element('pathschema-output')
 
 			temp_dir = Path(tempfile.gettempdir())
 			folder_to_validate = 'root'
@@ -97,22 +179,23 @@
 
 				except SchemaError as e:
 					# Error in the user schema
-					schema_parse_error_element.write(str(e))
+					pathschema_output_element.write(str(e))
 					return
 				except Exception as e:
 					# Other exceptions
-					print(str(e))
-					return
+					pathschema_output_element.write('Unexpected error')
+					raise e
 
 				if(results.has_error()):
 					show_validation_errors(results)
 				else:
-					clear_validation_errors()
+					show_validation_success()
 					# TODO: show success?
-			
-			def clear_validation_errors():
-				validation_error_element.clear()
-			
+
+			def show_validation_success():
+				pathschema_output_element.clear()
+				pathschema_output_element.write('Success', append=True)
+
 			def show_validation_errors(results):
 				text = ''
 
@@ -120,36 +203,31 @@
 					if(len(errors) > 0 ):
 						text += 'FAIL  '
 					else:
-						text += '&nbsp;&nbsp;OK    '
+						text += '  OK  '
 
 					text += str(path) + '\n'
 					
 					for error in errors:
-						text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + error + '\n'
-				
-				validation_error_element.clear()
-				for line in text.split('\n'):
-					validation_error_element.write(line, append=True)
+						text += '        ' + error + '\n'
 
+				pathschema_output_element.clear()
+				for line in text.split('\n'):
+					pathschema_output_element.write(line, append=True)
 
 			def set_folder_to_validate(name):
 				global folder_to_validate
 				folder_to_validate = name
 
 			def create_fake_file(path):
-				print('creating file ' + path)
 				full_path = temp_dir / path
 				os.makedirs(full_path.parent, exist_ok=True)
 				full_path.touch()
 
 			def create_fake_dir(path):
-				print('creating dir ' + path)
 				os.makedirs(temp_dir / path, exist_ok=True)
 
 			def clear_paths():
 				shutil.rmtree(temp_dir)
-
-
 		</py-script>
 
 		<script>
@@ -173,7 +251,7 @@
 						'themes' : {
 							'responsive' : false,
 							'variant' : 'small',
-							'stripes' : true
+							'stripes' : false
 						},
 					},
 					'sort' : function(a, b) {
@@ -247,7 +325,7 @@
 				if(parentName != null) {
 					name = parentName + '/' + name
 				}
-				
+
 				if(node.type == 'file') {
 					// create the file
 					pyscript.interpreter.globals.get('create_fake_file')(name);
@@ -256,7 +334,7 @@
 					// create the directory
 					pyscript.interpreter.globals.get('create_fake_dir')(name);
 				}
-				
+
 				if(node.children.length > 0) {
 					node.children.forEach(childId => {
 						const childNode = $('#jstree-container').jstree(true).get_node(childId);
@@ -266,9 +344,8 @@
 			}
 
 			function doTheValidation() {
-
 				const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
-				
+
 				// update the name of the folder to validate
 				pyscript.interpreter.globals.get('set_folder_to_validate')(rootNode.text.trim());
 
@@ -277,11 +354,18 @@
 
 				// create all new paths
 				createPathsFromNodes(rootNode)
-				
+
 				// start the validation
 				pyscript.interpreter.globals.get('validate_the_files_with_schema')();
 			}
 
+			function expandAll() {
+				$('#jstree-container').jstree('open_all')
+			}
+
+			function collapseAll() {
+				$('#jstree-container').jstree('close_all')
+			}
 		</script>
 
 	</body>
