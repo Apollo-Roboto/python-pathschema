@@ -7,11 +7,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
 
+		<!-- Fonts -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code|Inter&display=swap">
+
 		<!-- JQuery -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
 
 		<!-- Pyscript -->
-		<script defer src="https://pyscript.net/latest/pyscript.js"></script>
+		<!-- <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
 		<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
 
 		<!-- jstree -->
@@ -43,77 +46,86 @@
 		</div>
 
 		<!-- main content -->
-		<div class="mx-auto w-8/12">
+		<div class="mx-auto w-9/12">
 
-			<h1>PathSchema</h1>
-			<p>introduction paragraph here</p>
+			<!-- Spacer -->
+			<div class="h-12"></div>
+
+			<!-- Header -->
+			<div class="mx-auto w-11/12">
+				<h1 class="mb-3">PathSchema</h1>
+				<p class="text-slate-500">
+					<span>Finally an easy way to validate your folder structure</span>
+					<span class="float-right">Checkout this sick online demo!</span>
+				</p>
+			</div>
+
+			<!-- Spacer -->
+			<div class="h-12"></div>
 
 			<!-- live preview area -->
 			<div>
-				<div class="flex w-full h-96 gap-5">
+				<div class="flex w-full h-96 gap-6">
 					
 					<!-- Schema input box -->
-					<div class="flex-[3] border border-black rounded-lg overflow-hidden">
-						<textarea 
-							id="schema-input"
-							class="rounded-lg resize-none w-full h-full p-3 font-mono overflow-y-scroll scrollbar-thin"
-							placeholder="Write the schema here"
-							autocomplete="off"
-							autocorrect="off"
-							autocapitalize="off"
-							spellcheck="false"></textarea>
+					<div class="flex-1">
+						<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">.pathschema</div>
+						<div class="border border-slate-300 rounded-lg overflow-hidden w-full h-full"> <!-- overflow-hidden to hide scroll bar corner -->
+							<textarea 
+								id="schema-input"
+								class="rounded-lg resize-none w-full h-full p-3 font-mono overflow-y-scroll scrollbar-thin outline-none text-sm"
+								placeholder="Write your schema here"
+								autocomplete="off"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"></textarea>
+						</div>
 					</div>
-					
+
 					<!-- path structure creation area -->
-					<div class="flex-[2] border border-black rounded-lg overflow-hidden">
-						<div
-							id="jstree-container"
-							class="rounded-lg h-full p-3 overflow-y-scroll scrollbar-thin">
-							<ul>
-								<li data-jstree='{"type":"default"}'>
-									root
-									<ul>
-										<li data-jstree='{"type":"file"}'>file1.txt</li>
-										<li data-jstree='{"type":"file"}'>file2.txt</li>
-										<li data-jstree='{"type":"file"}'>file3.txt</li>
-										<li data-jstree='{"type":"default"}'>
-											folder
-											<ul>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-												<li data-jstree='{"type":"file"}'>nestedfile.png</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
+					<div class="flex-1">
+						<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">Structure</div>
+						<div class="border border-slate-300 rounded-lg overflow-hidden w-full h-full"> <!-- overflow-hidden to hide scroll bar corner -->
+							<div
+								id="jstree-container"
+								class="rounded-lg h-full p-3 overflow-y-scroll scrollbar-thin">
+								<ul>
+									<li data-jstree='{"type":"default"}'>
+										root
+										<ul>
+											<li data-jstree='{"type":"file"}'>file1.txt</li>
+											<li data-jstree='{"type":"file"}'>file2.txt</li>
+											<li data-jstree='{"type":"file"}'>file3.txt</li>
+											<li data-jstree='{"type":"default"}'>
+												folder
+												<ul>
+													<li data-jstree='{"type":"file"}'>nestedfile1.png</li>
+													<li data-jstree='{"type":"file"}'>nestedfile2.png</li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
+
+				<!-- Spacer -->
+				<div class="h-6"></div>
 				
 				<!-- output box -->
 				<div>
-					<pre id="pathschema-output"></pre>
+					<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">Output</div>
+					<div class="h-64 border border-slate-300 rounded-lg overflow-hidden"> <!-- overflow-hidden to hide scroll bar corner -->
+						<pre
+							class="rounded-lg p-3 overflow-y-scroll scrollbar-thin h-full w-full text-sm"
+							id="pathschema-output">
+						</pre>
+					</div>
 				</div>
 
-				<!-- validation button -->
+				<!-- validation button --> 
 				<button onclick="doTheValidation()" class="">Do the validation</button>
 
 				<!-- expand all button -->
@@ -132,18 +144,42 @@
 						<button>Python Project</button>
 					</div>
 				</div>
+				<!-- ko-fi button -->
+				<div id="ko-fi-button">
+					<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
+				</div>
 			</div>
+
+			<!-- Spacer -->
+			<div class="h-12"></div>
+
+			<!-- short text area -->
+			<div class="mx-auto w-11/12 flex flex-row justify-between">
+				<div class="w-80">
+					<h2>Easy to use</h2>
+					<p class="text-slate-500">It's schema definition is fast and easy to write and easy to implement</p>
+				</div>
+				<div class="w-80">
+					<h2>Work Confidence</h2>
+					<p class="text-slate-500">Should I have those boxes?</p>
+				</div>
+				<div class="w-80">
+					<h2>Quality</h2>
+					<p class="text-slate-500">bleh</p>
+				</div>
+			</div>
+
+			<!-- Spacer -->
+			<div class="h-12"></div>
 
 			<!-- text area -->
-			<div>
+			<div class="mx-auto w-11/12">
 				<h2>How to use</h2>
-				<p>useful things</p>
+				<h3>Installation</h3>
+				<h3>Syntax</h3>
+				<h3>Command Line</h3>
 			</div>
 
-			<!-- ko-fi button -->
-			<div id="ko-fi-button">
-				<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#d136ba', 'M4M3CMENQ');kofiwidget2.draw();</script> 
-			</div>
 		</div>
 
 		<py-config>

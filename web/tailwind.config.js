@@ -1,7 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ["./**/*.{html,js,ts}"],
+	content: ["./index.html"],
 	theme: {
+		fontFamily: {
+			'sans': ['Inter'],
+			'mono': ['Fira Code']
+		},
 		extend: {
 		},
 	},

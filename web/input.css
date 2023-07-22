@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+h1 {
+	@apply text-4xl font-normal text-slate-900;
+}
+
+h2 {
+	@apply text-3xl font-normal text-slate-900;
+}
+
+h3 {
+	@apply text-2xl font-medium text-slate-900;
+}
+
+pre,
+.font-mono {
+	font-variant-ligatures: none; 
+}
