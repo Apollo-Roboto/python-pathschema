@@ -3,18 +3,23 @@
 @tailwind utilities;
 
 h1 {
-	@apply text-4xl font-normal text-slate-900;
+	@apply text-4xl font-normal text-slate-900 mb-3;
 }
 
 h2 {
-	@apply text-3xl font-normal text-slate-900;
+	@apply text-3xl font-normal text-slate-900 mb-2;
 }
 
 h3 {
-	@apply text-2xl font-medium text-slate-900;
+	@apply text-2xl font-medium text-slate-900 mb-2;
 }
 
 pre,
 .font-mono {
 	font-variant-ligatures: none; 
+}
+
+button,
+.btn {
+	@apply text-slate-900 hover:shadow-md shadow-black transition-colors;
 }
