@@ -580,6 +580,18 @@ video {
   margin-right: auto;
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
+.mt-9 {
+  margin-top: 2.25rem;
+}
+
 .inline-block {
   display: inline-block;
 }
@@ -600,8 +612,8 @@ video {
   height: 3rem;
 }
 
-.h-16 {
-  height: 4rem;
+.h-24 {
+  height: 6rem;
 }
 
 .h-5 {
@@ -624,20 +636,12 @@ video {
   height: 100%;
 }
 
-.h-24 {
-  height: 6rem;
-}
-
 .w-11\/12 {
   width: 91.666667%;
 }
 
 .w-5 {
   width: 1.25rem;
-}
-
-.w-7\/12 {
-  width: 58.333333%;
 }
 
 .w-80 {
@@ -662,6 +666,10 @@ video {
 
 .flex-row {
   flex-direction: row;
+}
+
+.flex-col {
+  flex-direction: column;
 }
 
 .justify-between {
@@ -739,6 +747,16 @@ video {
   font-family: Fira Code;
 }
 
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -749,14 +767,23 @@ video {
   line-height: 1rem;
 }
 
+.font-normal {
+  font-weight: 400;
+}
+
+.text-slate-400 {
+  --tw-text-opacity: 1;
+  color: rgb(148 163 184 / var(--tw-text-opacity));
+}
+
 .text-slate-500 {
   --tw-text-opacity: 1;
   color: rgb(100 116 139 / var(--tw-text-opacity));
 }
 
-.text-slate-100 {
+.text-slate-900 {
   --tw-text-opacity: 1;
-  color: rgb(241 245 249 / var(--tw-text-opacity));
+  color: rgb(15 23 42 / var(--tw-text-opacity));
 }
 
 .outline-none {
@@ -821,8 +848,19 @@ video {
   height: 8px;
 }
 
-h1 {
+::-moz-selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
+::selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
+#tutorial-area h1 {
   margin-bottom: 0.75rem;
+  margin-top: 2.25rem;
   font-size: 2.25rem;
   line-height: 2.5rem;
   font-weight: 400;
@@ -830,8 +868,9 @@ h1 {
   color: rgb(15 23 42 / var(--tw-text-opacity));
 }
 
-h2 {
+#tutorial-area h2 {
   margin-bottom: 0.5rem;
+  margin-top: 2.25rem;
   font-size: 1.875rem;
   line-height: 2.25rem;
   font-weight: 400;
@@ -839,13 +878,46 @@ h2 {
   color: rgb(15 23 42 / var(--tw-text-opacity));
 }
 
-h3 {
+#tutorial-area h3 {
   margin-bottom: 0.5rem;
+  margin-top: 2.25rem;
   font-size: 1.5rem;
   line-height: 2rem;
-  font-weight: 500;
+  font-weight: 600;
   --tw-text-opacity: 1;
   color: rgb(15 23 42 / var(--tw-text-opacity));
+}
+
+#tutorial-area h4 {
+  margin-bottom: 0.25rem;
+  margin-top: 1.75rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(15 23 42 / var(--tw-text-opacity));
+}
+
+#tutorial-area p {
+  --tw-text-opacity: 1;
+  color: rgb(71 85 105 / var(--tw-text-opacity));
+}
+
+#tutorial-area pre {
+  border-radius: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(71 85 105 / var(--tw-bg-opacity));
+  padding: 0.75rem;
+  --tw-text-opacity: 1;
+  color: rgb(241 245 249 / var(--tw-text-opacity));
+}
+
+#tutorial-area code {
+  border-radius: 0.375rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity));
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 pre,
@@ -884,4 +956,36 @@ button:hover,
 .hover\:bg-slate-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
+}
+
+@media (min-width: 640px) {
+  .sm\:flex-row {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:flex-row {
+    flex-direction: row;
+  }
+
+  .md\:gap-16 {
+    gap: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:w-9\/12 {
+    width: 75%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:w-7\/12 {
+    width: 58.333333%;
+  }
 }
