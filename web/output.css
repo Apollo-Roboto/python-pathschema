@@ -632,6 +632,10 @@ video {
   height: 24rem;
 }
 
+.h-\[350px\] {
+  height: 350px;
+}
+
 .h-full {
   height: 100%;
 }
@@ -644,10 +648,6 @@ video {
   width: 1.25rem;
 }
 
-.w-80 {
-  width: 20rem;
-}
-
 .w-full {
   width: 100%;
 }
@@ -656,16 +656,8 @@ video {
   flex: 1 1 0%;
 }
 
-.grow {
-  flex-grow: 1;
-}
-
 .resize-none {
   resize: none;
-}
-
-.flex-row {
-  flex-direction: row;
 }
 
 .flex-col {
@@ -682,6 +674,10 @@ video {
 
 .gap-6 {
   gap: 1.5rem;
+}
+
+.gap-7 {
+  gap: 1.75rem;
 }
 
 .overflow-hidden {
@@ -718,6 +714,10 @@ video {
 .bg-slate-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(71 85 105 / var(--tw-bg-opacity));
+}
+
+.bg-transparent {
+  background-color: transparent;
 }
 
 .p-3 {
@@ -904,12 +904,65 @@ video {
 }
 
 #tutorial-area pre {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  overflow: auto;
   border-radius: 0.5rem;
   --tw-bg-opacity: 1;
   background-color: rgb(71 85 105 / var(--tw-bg-opacity));
   padding: 0.75rem;
   --tw-text-opacity: 1;
   color: rgb(241 245 249 / var(--tw-text-opacity));
+  scrollbar-color: var(--scrollbar-thumb, initial) var(--scrollbar-track, initial);
+}
+
+#tutorial-area pre::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track);
+  border-radius: var(--scrollbar-track-radius);
+}
+
+#tutorial-area pre::-webkit-scrollbar-track:hover {
+  background-color: var(--scrollbar-track-hover, var(--scrollbar-track));
+}
+
+#tutorial-area pre::-webkit-scrollbar-track:active {
+  background-color: var(--scrollbar-track-active, var(--scrollbar-track-hover, var(--scrollbar-track)));
+}
+
+#tutorial-area pre::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-thumb-radius);
+}
+
+#tutorial-area pre::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover, var(--scrollbar-thumb));
+}
+
+#tutorial-area pre::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-thumb-active, var(--scrollbar-thumb-hover, var(--scrollbar-thumb)));
+}
+
+#tutorial-area pre::-webkit-scrollbar-corner {
+  background-color: var(--scrollbar-corner);
+  border-radius: var(--scrollbar-corner-radius);
+}
+
+#tutorial-area pre::-webkit-scrollbar-corner:hover {
+  background-color: var(--scrollbar-corner-hover, var(--scrollbar-corner));
+}
+
+#tutorial-area pre::-webkit-scrollbar-corner:active {
+  background-color: var(--scrollbar-corner-active, var(--scrollbar-corner-hover, var(--scrollbar-corner)));
+}
+
+#tutorial-area pre {
+  scrollbar-width: thin;
+}
+
+#tutorial-area pre::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+  height: 8px;
 }
 
 #tutorial-area code {
@@ -927,6 +980,7 @@ pre,
 
 button,
 .btn {
+  text-align: center;
   --tw-text-opacity: 1;
   color: rgb(15 23 42 / var(--tw-text-opacity));
   --tw-shadow-color: #000;
@@ -941,6 +995,11 @@ button:hover,
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.grid-decoration {
+  background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 255, 255, 0)), url(./footer-texture.svg);
+  background-position: center;
 }
 
 .hover\:bg-green-300:hover {
@@ -969,6 +1028,14 @@ button:hover,
 }
 
 @media (min-width: 768px) {
+  .md\:block {
+    display: block;
+  }
+
+  .md\:grow {
+    flex-grow: 1;
+  }
+
   .md\:flex-row {
     flex-direction: row;
   }

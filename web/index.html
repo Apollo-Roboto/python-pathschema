@@ -91,7 +91,7 @@
 						<div class="border border-slate-300 rounded-lg overflow-hidden w-full h-full"> <!-- overflow-hidden to hide scroll bar corner -->
 							<textarea 
 								id="schema-input"
-								class="rounded-lg resize-none w-full h-full p-3 font-mono overflow-y-scroll scrollbar-thin outline-none text-sm"
+								class="rounded-lg resize-none w-full h-full p-3 font-mono overflow-y-scroll scrollbar-thin outline-none text-sm bg-transparent"
 								placeholder="Write your schema here"
 								autocomplete="off"
 								autocorrect="off"
@@ -165,7 +165,7 @@
 				<div class="h-5"></div>
 				
 				<!-- Button area -->
-				<div class="flex flex-row gap-5">
+				<div class="flex flex-col md:flex-row gap-5">
 
 					<!-- validation button --> 
 					<button onclick="doTheValidation()" class="rounded-lg bg-green-400 hover:bg-green-300 px-6 py-2">Do the validation</button>
@@ -175,7 +175,7 @@
 						<div>
 							<button
 								onclick="alert('not implemented')"
-								class="rounded-lg bg-slate-300 hover:bg-slate-200 px-6 py-2">
+								class="rounded-lg bg-slate-300 hover:bg-slate-200 px-6 py-2 w-full">
 								Examples
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block w-5 h-5">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -190,7 +190,7 @@
 					</div>
 
 					<!-- spacer -->
-					<div class="grow"></div>
+					<div class="md:grow hidden md:block"></div>
 
 					<!-- ko-fi button -->
 					<a class="btn rounded-lg bg-slate-300 hover:bg-slate-200 px-6 py-2" href="https://ko-fi.com/M4M3CMENQ">
@@ -205,16 +205,16 @@
 			<div class="h-24"></div>
 
 			<!-- short text area -->
-			<div class="mx-auto w-11/12 flex flex-col gap-6 sm:flex-row justify-between">
-				<div class="w-80">
+			<div class="mx-auto w-11/12 flex flex-col gap-7 md:flex-row justify-between">
+				<div class="w-full">
 					<h2 class="text-3xl font-normal text-slate-900 mb-2">Easy to use</h2>
 					<p class="text-slate-500">The schema definition is fast and easy to write and to implement.</p>
 				</div>
-				<div class="w-80">
+				<div class="w-full">
 					<h2 class="text-3xl font-normal text-slate-900 mb-2">Open Source</h2>
 					<p class="text-slate-500">Available on GitHub with a common MIT License.</p>
 				</div>
-				<div class="w-80">
+				<div class="w-full">
 					<h2 class="text-3xl font-normal text-slate-900 mb-2">Quality</h2>
 					<p class="text-slate-500">bleh</p>
 				</div>
@@ -233,7 +233,9 @@
 				<pre>pip install pathschema</pre>
 
 				<h3>Using the Command Line</h3>
-				<pre>python -m pathschema ./.pathschema path/to/dir</pre>
+				<p>PathSchema comes with an easy to use command line tool to run a validation on a given folder.</p>
+				<pre>python -m pathschema path/to/.pathschema path/to/folder</pre>
+				<p>More options are available, make sure to take a look at the help files with the <code>--help</code> argument.</p>
 
 				<h3>Schema Syntax</h3>
 				<p>To get started, create a file named <code>.pathschema</code>. It is usually placed within the target folder you wish to validate</p>
@@ -269,21 +271,25 @@
 		<div class="h-24"></div>
 
 		<!-- footer -->
-		<div class="bg-slate-600 text-center text-slate-400 text-xs">
+		<div>
+			<div class="grid-decoration h-[350px]"></div>
 
-			<!-- spacer -->
-			<div class="h-24"></div>
-			
-			<p>Copyright © 2023 | Apollo-Roboto</p>
+			<div class="bg-slate-600 text-center text-slate-400 text-xs">
 
-			<!-- spacer -->
-			<div class="h-12"></div>
+				<!-- spacer -->
+				<div class="h-24"></div>
+				
+				<p>Copyright © 2023 | Apollo-Roboto</p>
 
-			<p>Powered by <a href="https://pyscript.net/" class="hover:underline">Pyscript</a> and <a href="https://tailwindcss.com/" class="hover:underline">Tailwindcss</a></p>
+				<!-- spacer -->
+				<div class="h-12"></div>
 
-			<!-- spacer -->
-			<div class="h-12"></div>
-			
+				<p>Powered by <a href="https://pyscript.net/" class="hover:underline">Pyscript</a> and <a href="https://tailwindcss.com/" class="hover:underline">Tailwindcss</a></p>
+
+				<!-- spacer -->
+				<div class="h-12"></div>
+				
+			</div>
 		</div>
 
 		<py-config>
