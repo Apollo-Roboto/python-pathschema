@@ -23,6 +23,9 @@
 		<!-- they have an interresting style over there -->
 		<!-- https://preview.keenthemes.com/html/metronic/docs/general/jstree/overview -->
 
+		<!-- Examples -->
+		<script src="./examples.js"></script>
+
 		<link rel="stylesheet" href="./output.css"/>
 
 		<style>
@@ -65,9 +68,6 @@
 
 		<!-- main content -->
 		<div class="mx-auto xl:w-7/12 lg:w-9/12 w-11/12">
-
-			<!-- spacer -->
-			<div class="h-12"></div>
 
 			<!-- Header -->
 			<div class="mx-auto w-11/12">
@@ -127,21 +127,7 @@
 								id="jstree-container"
 								class="rounded-lg h-full p-3 overflow-y-scroll scrollbar-thin">
 								<ul>
-									<li data-jstree='{"type":"default"}'>
-										root
-										<ul>
-											<li data-jstree='{"type":"file"}'>file1.txt</li>
-											<li data-jstree='{"type":"file"}'>file2.txt</li>
-											<li data-jstree='{"type":"file"}'>file3.txt</li>
-											<li data-jstree='{"type":"default"}'>
-												folder
-												<ul>
-													<li data-jstree='{"type":"file"}'>nestedfile1.png</li>
-													<li data-jstree='{"type":"file"}'>nestedfile2.png</li>
-												</ul>
-											</li>
-										</ul>
-									</li>
+									<li data-jstree='{"type":"default"}'>root</li>
 								</ul>
 							</div>
 						</div>
@@ -172,20 +158,23 @@
 
 					<!-- load example dropdown -->
 					<div>
-						<div>
-							<button
-								onclick="alert('not implemented')"
-								class="rounded-lg bg-slate-300 hover:bg-slate-200 px-6 py-2 w-full">
-								Examples
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block w-5 h-5">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-								</svg>
-							</button>
-						</div>
-						<div class="hidden">
-							<button>Organized Personal Pictures</button>
-							<button>Unity Project</button>
-							<button>Python Project</button>
+						<button
+							id="exampleDropDownButton"
+							onclick="toggleExampleDropDown()"
+							class="rounded-lg bg-slate-300 hover:bg-slate-200 px-6 py-2 w-full">
+							Load an example
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block w-5 h-5">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+							</svg>
+						</button>
+
+						<!-- drop down -->
+						<div id="exampleDropDown" class="absolute z-10 hidden">
+							<div id="exampleDropDownButtonGroup" class="relative bg-white top-2 border border-slate-300 rounded-lg shadow-lg flex flex-col overflow-hidden">
+								<button class="p-2 hover:shadow-none hover:bg-slate-200" onclick="loadExample('button')">button</button>
+								<!-- <button class="p-2 hover:shadow-none hover:bg-slate-200" onclick="loadExample('Photo by years')">Photo by years</button> -->
+								<!-- <button class="p-2 hover:shadow-none hover:bg-slate-200" onclick="loadExample('Python project')">Python project</button> -->
+							</div>
 						</div>
 					</div>
 
@@ -512,6 +501,39 @@
 			function collapseAll() {
 				$('#jstree-container').jstree('close_all')
 			}
+
+			function toggleExampleDropDown() {
+				let element = document.getElementById('exampleDropDown');
+				element.classList.toggle('hidden');
+			}
+			
+			// close dropDown
+			document.addEventListener('click', e => {
+				let element = document.getElementById('exampleDropDown');
+				let button = document.getElementById('exampleDropDownButton')
+				let clickedElement = e.target;
+				if(clickedElement !== element && !button.contains(clickedElement) && !element.contains(clickedElement)) {
+					element.classList.add('hidden');
+				}
+			});
+
+			// prepare the examples drop down
+			document.addEventListener("DOMContentLoaded", () => {
+				let buttonGroupElement = document.getElementById('exampleDropDownButtonGroup');
+				let exampleButton = buttonGroupElement.children[0];
+
+				// example_schemas comes from the examples
+				example_schemas.forEach(example => {
+					console.log(example);
+					let newButton = exampleButton.cloneNode(true);
+					newButton.innerText = example.name;
+					newButton.setAttribute('onclick', `loadExample('${example.name}')`);
+					buttonGroupElement.appendChild(newButton);
+				});
+
+				buttonGroupElement.removeChild(exampleButton);
+			});
+
 		</script>
 
 	</body>
