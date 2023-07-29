@@ -20,7 +20,7 @@
 		<!-- jstree -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-		<!-- they have an interresting style over there -->
+		<!-- TODO: they have an interresting style over there -->
 		<!-- https://preview.keenthemes.com/html/metronic/docs/general/jstree/overview -->
 
 		<!-- Examples -->
@@ -83,10 +83,10 @@
 
 			<!-- live preview area -->
 			<div>
-				<div class="flex flex-col sm:flex-row w-full h-96 gap-6">
+				<div class="flex flex-col sm:flex-row w-full sm:h-96 gap-6">
 					
 					<!-- Schema input box -->
-					<div class="flex-1">
+					<div class="sm:flex-1 h-48 sm:h-auto">
 						<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">.pathschema</div>
 						<div class="border border-slate-300 rounded-lg overflow-hidden w-full h-full"> <!-- overflow-hidden to hide scroll bar corner -->
 							<textarea 
@@ -101,7 +101,7 @@
 					</div>
 
 					<!-- path structure creation area -->
-					<div class="flex-1">
+					<div class="sm:flex-1 h-48 sm:h-auto">
 						<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">Structure</div>
 						
 						<div class="relative border border-slate-300 rounded-lg overflow-hidden w-full h-full"> <!-- overflow-hidden to hide scroll bar corner -->
@@ -193,25 +193,6 @@
 			<!-- Spacing -->
 			<div class="h-24"></div>
 
-			<!-- short text area -->
-			<div class="mx-auto w-11/12 flex flex-col gap-7 md:flex-row justify-between">
-				<div class="w-full">
-					<h2 class="text-3xl font-normal text-slate-900 mb-2">Easy to use</h2>
-					<p class="text-slate-500">The schema definition is fast and easy to write and to implement.</p>
-				</div>
-				<div class="w-full">
-					<h2 class="text-3xl font-normal text-slate-900 mb-2">Open Source</h2>
-					<p class="text-slate-500">Available on GitHub with a common MIT License.</p>
-				</div>
-				<div class="w-full">
-					<h2 class="text-3xl font-normal text-slate-900 mb-2">Quality</h2>
-					<p class="text-slate-500">bleh</p>
-				</div>
-			</div>
-
-			<!-- spacer -->
-			<div class="h-12"></div>
-
 			<!-- tutorial area -->
 			<div id="tutorial-area" class="mx-auto w-11/12">
 
@@ -232,10 +213,10 @@
 				<div class="flex flex-col md:flex-row md:gap-16">
 					<div>
 						<h4>Basic Path Definition</h4>
-						<p>Each line in the schema represents an acceptable path. By default, paths are treated as files but can be changed to be a folder by adding a slash (/) at the end of the line</p>
+						<p>Each line in the schema represents an acceptable path. By default, paths are treated as files but can be changed to be a folder by adding a slash (<code>/</code>) at the end of the line</p>
 
 						<h4>Adding Comments</h4>
-						<p>You can add comments to document your schema. Simply add a pound sign (#) at the beginning of the line.</p>
+						<p>You can add comments to document your schema. Simply add a pound sign (<code>#</code>) at the beginning of the line.</p>
 
 						<h4>Wildcard Characters</h4>
 						<p>Wildcard characters are supported in the path name by default. For example you can use <code>*.md</code> to only accept markdown files.</p>
@@ -245,10 +226,10 @@
 						<p>In the cases where a simple wildcard isn't enough, regex can be used to achieve more advance pattern matching. To do so, enclose the name in double quotes like this: <code>"[0-9]{4}"</code>.</p>
 
 						<h4>Making Paths Required or Forbidden</h4>
-						<p>Some path can be made required by using the plus sign (+) in front of it's name, example: <code>+ readme.md</code>. Similarly, you can make a path forbidden by using the minus sign (-).</p>
+						<p>Some path can be made required by using the plus sign (<code>+</code>) in front of it's name, example: <code>+ readme.md</code>. Similarly, you can make a path forbidden by using the minus sign (<code>-</code>).</p>
 
 						<h4>Ignoring Folder Contents</h4>
-						<p>To ignore the content of a folder, use the ellipsis (...).</p>
+						<p>To ignore the content of a folder, use the ellipsis (<code>...</code>).</p>
 					</div>
 				</div>
 
@@ -293,6 +274,7 @@
 
 			from pathschema import validate
 			from pathschema.models import DirPathNode
+			from pathschema.exceptions import SchemaError
 
 			# elements
 			schema_input_element = Element('schema-input')
@@ -304,6 +286,8 @@
 			def validate_the_files_with_schema():
 
 				results = None
+
+				pathschema_output_element.clear()
 
 				try:
 					# get the schema from the input element
@@ -325,7 +309,6 @@
 					show_validation_errors(results)
 				else:
 					show_validation_success()
-					# TODO: show success?
 
 			def show_validation_success():
 				pathschema_output_element.clear()
@@ -524,7 +507,6 @@
 
 				// example_schemas comes from the examples
 				example_schemas.forEach(example => {
-					console.log(example);
 					let newButton = exampleButton.cloneNode(true);
 					newButton.innerText = example.name;
 					newButton.setAttribute('onclick', `loadExample('${example.name}')`);
