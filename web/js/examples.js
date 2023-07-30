@@ -1,3 +1,9 @@
+
+// paths:
+//   first key is root folder name
+//   if object -> is folder
+//   if null -> is file
+
 example_schemas = [
 	{
 		'name': 'Photo by years',
@@ -120,50 +126,3 @@ example_schemas = [
 		},
 	},
 ]
-
-
-
-function buildTree(parentNode, paths) {
-
-	Object.keys(paths).forEach(key => {
-		// is file
-		if(paths[key] == null) {
-			$("#jstree-container").jstree('create_node', parentNode, { 'text': key, 'type': 'file' });
-		}
-		// is folder
-		else {
-			let childId = $("#jstree-container").jstree('create_node', parentNode, { 'text': key, 'type': 'default' });
-			let childNode = $('#jstree-container').jstree(true).get_node(childId);
-			buildTree(childNode, paths[key]);
-		}
-	});
-}
-
-function loadExample(name) {
-
-	example = null
-
-	example_schemas.forEach(x => {
-		if(x.name == name) {
-			example = x;
-		}
-	})
-
-	if(example == null) {
-		throw new Error(`Example named ${name} was not found`);
-	}
-
-	document.getElementById("schema-input").innerHTML = example.schema;
-
-	const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
-
-	rootName = Object.keys(example.paths)[0];
-
-	// rename root
-	$("#jstree-container").jstree('rename_node', rootNode, rootName);
-
-	// delete the tree
-	$("#jstree-container").jstree('delete_node', rootNode.children)
-
-	buildTree(rootNode, example.paths[rootName]);
-}

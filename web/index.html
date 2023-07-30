@@ -5,7 +5,8 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>PathSchema Demo</title>
+		<link rel="icon" href="./static/P_64x64.png">
 
 		<!-- Fonts -->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code|Inter&display=swap">
@@ -24,9 +25,9 @@
 		<!-- https://preview.keenthemes.com/html/metronic/docs/general/jstree/overview -->
 
 		<!-- Examples -->
-		<script src="./examples.js"></script>
+		<script src="./js/examples.js"></script>
 
-		<link rel="stylesheet" href="./output.css"/>
+		<link rel="stylesheet" href="./css/output.css"/>
 
 		<style>
 			#jstree-container .folder { background:url('https://www.jstree.com/demo_filebrowser/file_sprite.png') right bottom no-repeat; }
@@ -502,12 +503,60 @@
 				}
 			});
 
+			function buildTree(parentNode, paths) {
+
+				Object.keys(paths).forEach(key => {
+					// is file
+					if(paths[key] == null) {
+						$("#jstree-container").jstree('create_node', parentNode, { 'text': key, 'type': 'file' });
+					}
+					// is folder
+					else {
+						let childId = $("#jstree-container").jstree('create_node', parentNode, { 'text': key, 'type': 'default' });
+						let childNode = $('#jstree-container').jstree(true).get_node(childId);
+						buildTree(childNode, paths[key]);
+					}
+				});
+			}
+
+			function loadExample(name) {
+
+				example = null
+				
+				// example_schemas comes from examples.js
+				example_schemas.forEach(x => {
+					if(x.name == name) {
+						example = x;
+					}
+				})
+
+				if(example == null) {
+					throw new Error(`Example named ${name} was not found`);
+				}
+
+				document.getElementById("schema-input").innerHTML = example.schema;
+
+				const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
+
+				rootName = Object.keys(example.paths)[0];
+
+				// rename root
+				$("#jstree-container").jstree('rename_node', rootNode, rootName);
+
+				// delete the tree
+				$("#jstree-container").jstree('delete_node', rootNode.children)
+				
+				// recreate the tree
+				buildTree(rootNode, example.paths[rootName]);
+			}
+
+
 			// prepare the examples drop down
 			document.addEventListener("DOMContentLoaded", () => {
 				let buttonGroupElement = document.getElementById('exampleDropDownButtonGroup');
 				let exampleButton = buttonGroupElement.children[0];
 
-				// example_schemas comes from the examples
+				// example_schemas comes from examples.js
 				example_schemas.forEach(example => {
 					let newButton = exampleButton.cloneNode(true);
 					newButton.innerText = example.name;

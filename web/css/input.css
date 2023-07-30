@@ -46,6 +46,6 @@ button,
 }
 
 .grid-decoration {
-	background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 255, 255, 0)), url(./footer-texture.svg);
+	background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 255, 255, 0)), url(../static/footer-texture.svg);
 	background-position: center;
 }
