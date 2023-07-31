@@ -11,11 +11,11 @@ pip install pathschema
 ```python
 from pathschema import validate
 
-schema = ''
+schema = 'YOUR SCHEMA HERE'
 
 path_to_validate = './path'
 
-with open('path/to/schema.txt', 'r') as f:
+with open('path/to/schema.pathschema', 'r') as f:
 	schema = f.read()
 
 result = validate(path_to_validate, schema)
@@ -25,6 +25,8 @@ if(result.has_error()):
 else:
 	print('Valid')
 ```
+
+## Syntax
 
 |  Symbol | Description  | Example |
 |---------|--------------|---------|
@@ -43,7 +45,7 @@ else:
 pathschema can be used directly in the command line.
 
 ```bash
-python -m pathschema path/to/schema.txt path/to/dir/to/validate
+python -m pathschema ./.pathschema path/to/dir/to/validate
 ```
 
 Argument details:
@@ -77,7 +79,7 @@ python -m unittest discover -v -s ./tests -p test_*.py
 
 Command line without installing
 ```bash
-python ./pathschema/ ./tests/experimentations/test_schema.txt ./tests/experimentations/test_directory_ok
+python ./pathschema/ ./tests/experimentations/test_schema.pathschema ./tests/experimentations/test_directory_ok
 ```
 
 # Example Schema Definition
