@@ -6,6 +6,8 @@
 pip install pathschema
 ```
 
+[Check out the online demo!](https://apollo-roboto.github.io/python-pathschema/)
+
 # How to use
 
 ```python
