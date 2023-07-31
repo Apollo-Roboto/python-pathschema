@@ -1,4 +1,4 @@
-name: Python
+name: Update GitHub Pages
 
 on:
   push:
@@ -6,22 +6,14 @@ on:
     paths: ['./web']
 
   workflow_dispatch:
-    
+
 jobs:
 
   update:
-    name: Build And Test
+    name: Update Github Pages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '18'
-
-      # - name: Install Dependencies
-      #   run: npm install
-      #   working-directory: ./web
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -29,4 +21,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./web
           publish_branch: gh-pages
-          exclude_assets: .gitignore,tailwind.config.js,README.md,package.json,package-lock.json,node_modules,
+          exclude_assets: .gitignore,tailwind.config.js,README.md,package.json,package-lock.json,node_modules
