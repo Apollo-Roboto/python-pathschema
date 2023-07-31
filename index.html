@@ -1,11 +1,574 @@
 <!DOCTYPE html>
 <html lang="en">
+
 	<head>
-		<meta charset="UTF-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<title>Document</title>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>PathSchema Demo</title>
+		<link rel="icon" href="./static/P_64x64.png">
+
+		<!-- Fonts -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code|Inter&display=swap">
+
+		<!-- JQuery -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+
+		<!-- Pyscript -->
+		<!-- <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
+		<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+
+		<!-- jstree -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+		<!-- TODO: they have an interresting style over there -->
+		<!-- https://preview.keenthemes.com/html/metronic/docs/general/jstree/overview -->
+
+		<!-- Examples -->
+		<script src="./js/examples.js"></script>
+
+		<link rel="stylesheet" href="./css/output.css"/>
+
+		<style>
+			#jstree-container .folder { background:url('https://www.jstree.com/demo_filebrowser/file_sprite.png') right bottom no-repeat; }
+			#jstree-container .file { background:url('https://www.jstree.com/demo_filebrowser/file_sprite.png') 0 0 no-repeat; }
+
+			img.kofiimg {
+				height:15px!important;
+				width:22px!important;
+				display: initial;
+				animation: kofi-wiggle 3s infinite;
+			}
+			@keyframes kofi-wiggle {
+				0% { transform:rotate(0) scale(1) }
+				60% { transform:rotate(0) scale(1) }
+				75% { transform:rotate(0) scale(1.12) }
+				80% { transform:rotate(0) scale(1.1) }
+				84% { transform:rotate(-10deg) scale(1.1) }
+				88% { transform:rotate(10deg) scale(1.1) }
+				92% { transform:rotate(-10deg) scale(1.1) }
+				96% { transform:rotate(10deg) scale(1.1) }
+				100% { transform:rotate(0) scale(1) }
+			}
+		</style>
 	</head>
+
 	<body>
-		<h1>🤖</h1>
+
+		<!-- github corner -->
+		<div>
+			<a href="https://github.com/Apollo-Roboto/python-pathschema" class="github-corner" aria-label="View source on GitHub">
+				<svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+					<path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+					<path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+					<path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+				</svg>
+			</a>
+			<style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+		</div>
+
+		<!-- main content -->
+		<div class="mx-auto xl:w-7/12 lg:w-9/12 w-11/12">
+
+			<!-- Header -->
+			<div class="mx-auto w-11/12">
+				<h1 class="text-4xl font-normal text-slate-900 mb-3 mt-9">PathSchema</h1>
+				<p class="text-slate-500">
+					<span>Finally an easy way to validate your folder structure</span>
+					<span class="float-right">Checkout this sick online demo!</span>
+				</p>
+			</div>
+
+			<!-- spacer -->
+			<div class="h-12"></div>
+
+			<!-- live preview area -->
+			<div>
+				<div class="flex flex-col sm:flex-row w-full sm:h-96 gap-6">
+					
+					<!-- Schema input box -->
+					<div class="sm:flex-1 h-48 sm:h-auto">
+						<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">.pathschema</div>
+						<div class="border border-slate-300 rounded-lg overflow-hidden w-full h-full"> <!-- overflow-hidden to hide scroll bar corner -->
+							<textarea 
+								id="schema-input"
+								class="rounded-lg resize-none w-full h-full p-3 font-mono overflow-y-scroll scrollbar-thin outline-none text-sm bg-transparent"
+								placeholder="Write your schema here"
+								autocomplete="off"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"></textarea>
+						</div>
+					</div>
+
+					<!-- path structure creation area -->
+					<div class="sm:flex-1 h-48 sm:h-auto">
+						<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">Structure</div>
+						
+						<div class="relative border border-slate-300 rounded-lg overflow-hidden w-full h-full"> <!-- overflow-hidden to hide scroll bar corner -->
+
+							<!-- buttons -->
+							<div class="absolute right-0 bottom-0 m-3">
+								<!-- expand all button -->
+								<button title="Expand All" onclick="expandAll()" class="rounded-lg hover:bg-slate-100 px-2 py-2">
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5" />
+									</svg>
+								</button>
+								<!-- collapse all button -->
+								<button title="Collapse All" onclick="collapseAll()" class="rounded-lg hover:bg-slate-100 px-2 py-2">
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
+									</svg>
+								</button>
+							</div>
+							
+							<!-- jstree -->
+							<div
+								id="jstree-container"
+								class="rounded-lg h-full p-3 overflow-y-scroll scrollbar-thin">
+								<ul>
+									<li data-jstree='{"type":"default"}'>root</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- spacer -->
+				<div class="h-6"></div>
+
+				<!-- output box -->
+				<div>
+					<div class="relative -top-4 left-4 h-0 text-xs text-slate-500">Output</div>
+					<div class="h-64 border border-slate-300 rounded-lg overflow-hidden"> <!-- overflow-hidden to hide scroll bar corner -->
+						<pre
+							class="rounded-lg p-3 overflow-y-scroll scrollbar-thin h-full w-full text-sm"
+							id="pathschema-output"></pre>
+					</div>
+				</div>
+
+				<!-- spacer -->
+				<div class="h-5"></div>
+				
+				<!-- Button area -->
+				<div class="flex flex-col md:flex-row gap-5">
+
+					<!-- validation button --> 
+					<button onclick="doTheValidation()" class="rounded-lg bg-green-400 hover:bg-green-300 px-6 py-2">Do the validation</button>
+
+					<!-- load example dropdown -->
+					<div>
+						<button
+							id="exampleDropDownButton"
+							onclick="toggleExampleDropDown()"
+							class="rounded-lg bg-slate-300 hover:bg-slate-200 px-6 py-2 w-full">
+							Load an example
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block w-5 h-5">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+							</svg>
+						</button>
+
+						<!-- drop down -->
+						<div id="exampleDropDown" class="absolute z-10 hidden">
+							<div id="exampleDropDownButtonGroup" class="relative bg-white top-2 border border-slate-300 rounded-lg shadow-lg flex flex-col overflow-hidden">
+								<button class="p-2 hover:shadow-none hover:bg-slate-200" onclick="loadExample('button')">button</button>
+								<!-- <button class="p-2 hover:shadow-none hover:bg-slate-200" onclick="loadExample('Photo by years')">Photo by years</button> -->
+								<!-- <button class="p-2 hover:shadow-none hover:bg-slate-200" onclick="loadExample('Python project')">Python project</button> -->
+							</div>
+						</div>
+					</div>
+
+					<!-- spacer -->
+					<div class="md:grow hidden md:block"></div>
+
+					<!-- ko-fi button -->
+					<a class="btn rounded-lg bg-slate-300 hover:bg-slate-200 px-6 py-2" href="https://ko-fi.com/M4M3CMENQ">
+						<img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi donations" class="kofiimg">
+						Support Me on Ko-fi
+					</a>
+				</div>
+
+			</div>
+
+			<!-- Spacing -->
+			<div class="h-24"></div>
+
+			<!-- tutorial area -->
+			<div id="tutorial-area" class="mx-auto w-11/12">
+
+				<h2>How to use</h2>
+
+				<h3>Installation</h3>
+				<p>PathSchema is published on <a href="https://pypi.org/project/pathschema/">Pypi</a> and can be installed using Pip.</p>
+				<pre>pip install pathschema</pre>
+
+				<h3>Using the Command Line</h3>
+				<p>PathSchema comes with an easy to use command line tool to run a validation on a given folder.</p>
+				<pre>python -m pathschema path/to/.pathschema path/to/folder</pre>
+				<p>More options are available, make sure to take a look at the help files with the <code>--help</code> argument.</p>
+
+				<h3>Schema Syntax</h3>
+				<p>To get started, create a file named <code>.pathschema</code>. It is usually placed within the target folder you wish to validate</p>
+				
+				<div class="flex flex-col md:flex-row md:gap-16">
+					<div>
+						<h4>Basic Path Definition</h4>
+						<p>Each line in the schema represents an acceptable path. By default, paths are treated as files but can be changed to be a folder by adding a slash (<code>/</code>) at the end of the line</p>
+
+						<h4>Adding Comments</h4>
+						<p>You can add comments to document your schema. Simply add a pound sign (<code>#</code>) at the beginning of the line.</p>
+
+						<h4>Wildcard Characters</h4>
+						<p>Wildcard characters are supported in the path name by default. For example you can use <code>*.md</code> to only accept markdown files.</p>
+					</div>
+					<div>
+						<h4>Advanced Pattern Matching with Regex</h4>
+						<p>In the cases where a simple wildcard isn't enough, regex can be used to achieve more advance pattern matching. To do so, enclose the name in double quotes like this: <code>"[0-9]{4}"</code>.</p>
+
+						<h4>Making Paths Required or Forbidden</h4>
+						<p>Some path can be made required by using the plus sign (<code>+</code>) in front of it's name, example: <code>+ readme.md</code>. Similarly, you can make a path forbidden by using the minus sign (<code>-</code>).</p>
+
+						<h4>Ignoring Folder Contents</h4>
+						<p>To ignore the content of a folder, use the ellipsis (<code>...</code>).</p>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<!-- spacer -->
+		<div class="h-24"></div>
+
+		<!-- footer -->
+		<div>
+			<div class="grid-decoration h-[346px]"></div>
+
+			<div class="bg-slate-300 h-4 w-full"></div>
+
+			<div class="bg-slate-600 text-center text-slate-400 text-xs">
+
+				<!-- spacer -->
+				<div class="h-12"></div>
+				
+				<p>Copyright © 2023 | Apollo-Roboto</p>
+
+				<!-- spacer -->
+				<div class="h-12"></div>
+
+				<p>Powered by <a href="https://pyscript.net/" class="hover:underline">Pyscript</a> and <a href="https://tailwindcss.com/" class="hover:underline">Tailwindcss</a></p>
+
+				<!-- spacer -->
+				<div class="h-12"></div>
+				
+			</div>
+		</div>
+
+		<py-config>
+			packages = ["matplotlib", "pandas", "pathschema==0.2.0"]
+		</py-config>
+		<py-script>
+			from pathlib import Path
+			from datetime import datetime
+			import os
+			import tempfile
+			import shutil
+
+			from pathschema import validate
+			from pathschema.models import DirPathNode
+			from pathschema.exceptions import SchemaError
+
+			# elements
+			schema_input_element = Element('schema-input')
+			pathschema_output_element = Element('pathschema-output')
+
+			temp_dir = Path(tempfile.gettempdir())
+			folder_to_validate = 'root'
+
+			def validate_the_files_with_schema():
+
+				results = None
+
+				pathschema_output_element.clear()
+
+				try:
+					# get the schema from the input element
+					schema = schema_input_element.value
+
+					# do the validation
+					results = validate(temp_dir / folder_to_validate, schema)
+
+				except SchemaError as e:
+					# Error in the user schema
+					pathschema_output_element.write(str(e))
+					return
+				except Exception as e:
+					# Other exceptions
+					pathschema_output_element.write('Unexpected error')
+					raise e
+
+				if(results.has_error()):
+					show_validation_errors(results)
+				else:
+					show_validation_success()
+
+			def show_validation_success():
+				pathschema_output_element.clear()
+				pathschema_output_element.write('Success', append=True)
+
+			def show_validation_errors(results):
+				text = ''
+
+				for path, errors in results.errors_by_path.items():
+					if(len(errors) > 0 ):
+						text += 'FAIL  '
+					else:
+						text += '  OK  '
+
+					text += str(path) + '\n'
+					
+					for error in errors:
+						text += '        ' + error + '\n'
+
+				pathschema_output_element.clear()
+				for line in text.split('\n'):
+					pathschema_output_element.write(line, append=True)
+
+			def set_folder_to_validate(name):
+				global folder_to_validate
+				folder_to_validate = name
+
+			def create_fake_file(path):
+				full_path = temp_dir / path
+				os.makedirs(full_path.parent, exist_ok=True)
+				full_path.touch()
+
+			def create_fake_dir(path):
+				os.makedirs(temp_dir / path, exist_ok=True)
+
+			def clear_paths():
+				shutil.rmtree(temp_dir)
+		</py-script>
+
+		<script>
+			$(function () {
+				$('#jstree-container').jstree({
+					'core': {
+						'check_callback' : function(o, n, p, i, m) {
+							// operation, node, node_parent, node_position, more
+							
+							if(m && m.dnd && m.pos !== 'i') { return false; }
+							if(o === "move_node" || o === "copy_node") {
+								if(this.get_node(n).parent === this.get_node(p).id) { return false; }
+							}
+
+							// prevent the root node from being deleted
+							if (o === 'delete_node' && n.id === 'j1_1') {
+								return false;
+							}
+							return true;
+						},
+						'themes' : {
+							'responsive' : false,
+							'variant' : 'small',
+							'stripes' : false
+						},
+					},
+					'sort' : function(a, b) {
+						return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
+					},
+					'contextmenu' : {
+						'items' : function(node) {
+							var tmp = $.jstree.defaults.contextmenu.items();
+							delete tmp.create.action;
+							tmp.create.label = "New";
+							tmp.create.submenu = {
+								"create_folder" : {
+									"separator_after" : true,
+									"label" : "Folder",
+									"action" : function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "default" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								},
+								"create_file" : {
+									"label" : "File",
+									"action" : function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "file" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								}
+							};
+							if(this.get_type(node) === "file") {
+								delete tmp.create;
+							}
+							return tmp;
+						}
+					},
+					'types' : {
+						'default' : { 'icon' : 'folder' },
+						'file' : { 'valid_children' : [], 'icon' : 'file' }
+					},
+					'unique' : {
+						'duplicate' : function (name, counter) {
+							return name + ' ' + counter;
+						}
+					},
+					'plugins' : ['state', 'dnd', 'sort', 'types', 'contextmenu', 'unique']
+				});
+
+				$('#jstree-container').on('changed.jstree', function (e, data) {
+					// console.log(data.selected);
+				});
+
+			});
+
+			function printNode(node) {
+				console.log(node.text.trim(), node);
+				if(node.children.length > 0) {
+					node.children.forEach(childId => {
+						const childNode = $('#jstree-container').jstree(true).get_node(childId);
+						printNode(childNode);
+					});
+				}
+			}
+
+			function createPathsFromNodes(node, parentName = null) {
+				let name = node.text.trim()
+
+				if(parentName != null) {
+					name = parentName + '/' + name
+				}
+
+				if(node.type == 'file') {
+					// create the file
+					pyscript.interpreter.globals.get('create_fake_file')(name);
+				}
+				else {
+					// create the directory
+					pyscript.interpreter.globals.get('create_fake_dir')(name);
+				}
+
+				if(node.children.length > 0) {
+					node.children.forEach(childId => {
+						const childNode = $('#jstree-container').jstree(true).get_node(childId);
+						createPathsFromNodes(childNode, name);
+					});
+				}
+			}
+
+			function doTheValidation() {
+				const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
+
+				// update the name of the folder to validate
+				pyscript.interpreter.globals.get('set_folder_to_validate')(rootNode.text.trim());
+
+				// clear all paths
+				pyscript.interpreter.globals.get('clear_paths')();
+
+				// create all new paths
+				createPathsFromNodes(rootNode)
+
+				// start the validation
+				pyscript.interpreter.globals.get('validate_the_files_with_schema')();
+			}
+
+			function expandAll() {
+				$('#jstree-container').jstree('open_all')
+			}
+
+			function collapseAll() {
+				$('#jstree-container').jstree('close_all')
+			}
+
+			function toggleExampleDropDown() {
+				let element = document.getElementById('exampleDropDown');
+				element.classList.toggle('hidden');
+			}
+			
+			// close dropDown
+			document.addEventListener('click', e => {
+				let element = document.getElementById('exampleDropDown');
+				let button = document.getElementById('exampleDropDownButton')
+				let clickedElement = e.target;
+				if(clickedElement !== element && !button.contains(clickedElement) && !element.contains(clickedElement)) {
+					element.classList.add('hidden');
+				}
+			});
+
+			function buildTree(parentNode, paths) {
+
+				Object.keys(paths).forEach(key => {
+					// is file
+					if(paths[key] == null) {
+						$("#jstree-container").jstree('create_node', parentNode, { 'text': key, 'type': 'file' });
+					}
+					// is folder
+					else {
+						let childId = $("#jstree-container").jstree('create_node', parentNode, { 'text': key, 'type': 'default' });
+						let childNode = $('#jstree-container').jstree(true).get_node(childId);
+						buildTree(childNode, paths[key]);
+					}
+				});
+			}
+
+			function loadExample(name) {
+
+				example = null
+				
+				// example_schemas comes from examples.js
+				example_schemas.forEach(x => {
+					if(x.name == name) {
+						example = x;
+					}
+				})
+
+				if(example == null) {
+					throw new Error(`Example named ${name} was not found`);
+				}
+
+				document.getElementById("schema-input").innerHTML = example.schema;
+
+				const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
+
+				rootName = Object.keys(example.paths)[0];
+
+				// rename root
+				$("#jstree-container").jstree('rename_node', rootNode, rootName);
+
+				// delete the tree
+				$("#jstree-container").jstree('delete_node', rootNode.children)
+				
+				// recreate the tree
+				buildTree(rootNode, example.paths[rootName]);
+			}
+
+
+			// prepare the examples drop down
+			document.addEventListener("DOMContentLoaded", () => {
+				let buttonGroupElement = document.getElementById('exampleDropDownButtonGroup');
+				let exampleButton = buttonGroupElement.children[0];
+
+				// example_schemas comes from examples.js
+				example_schemas.forEach(example => {
+					let newButton = exampleButton.cloneNode(true);
+					newButton.innerText = example.name;
+					newButton.setAttribute('onclick', `loadExample('${example.name}')`);
+					buttonGroupElement.appendChild(newButton);
+				});
+
+				buttonGroupElement.removeChild(exampleButton);
+			});
+
+		</script>
+
 	</body>
+
 </html>
