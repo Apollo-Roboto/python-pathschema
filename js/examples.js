@@ -13,7 +13,9 @@ example_schemas = [
 			'  *.png\n' +
 			'\n' +
 			'Unknown Year/\n' +
-			'  *.png\n',
+			'  *.png\n' +
+			'\n' +
+			'.pathschema\n',
 		'paths': {
 			'photos': {
 				'2020': {
@@ -58,6 +60,7 @@ example_schemas = [
 					'3.png': null,
 					'4.png': null,
 				},
+				'.pathschema': null,
 			},
 		},
 	},
@@ -122,6 +125,7 @@ example_schemas = [
 				'README.md': null,
 				'pyproject.toml': null,
 				'requirements.txt': null,
+				'.pathschema': null,
 			},
 		},
 	},
