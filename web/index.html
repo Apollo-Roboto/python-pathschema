@@ -292,6 +292,8 @@
 
 				pathschema_output_element.clear()
 
+				show_command()
+
 				try:
 					# get the schema from the input element
 					schema = schema_input_element.value
@@ -301,7 +303,7 @@
 
 				except SchemaError as e:
 					# Error in the user schema
-					pathschema_output_element.write(str(e))
+					pathschema_output_element.write(str(e), append=True)
 					return
 				except Exception as e:
 					# Other exceptions
@@ -313,8 +315,11 @@
 				else:
 					show_validation_success()
 
+			def show_command():
+				text = f'> python -m pathschema ./.pathschema {temp_dir / folder_to_validate}'
+				pathschema_output_element.write(text, append=True)
+
 			def show_validation_success():
-				pathschema_output_element.clear()
 				pathschema_output_element.write('Success', append=True)
 
 			def show_validation_errors(results):
@@ -331,7 +336,6 @@
 					for error in errors:
 						text += '        ' + error + '\n'
 
-				pathschema_output_element.clear()
 				for line in text.split('\n'):
 					pathschema_output_element.write(line, append=True)
 
@@ -534,7 +538,7 @@
 					throw new Error(`Example named ${name} was not found`);
 				}
 
-				document.getElementById("schema-input").innerHTML = example.schema;
+				document.getElementById("schema-input").value = example.schema;
 
 				const rootNode = $('#jstree-container').jstree(true).get_node('j1_1');
 
@@ -549,7 +553,6 @@
 				// recreate the tree
 				buildTree(rootNode, example.paths[rootName]);
 			}
-
 
 			// prepare the examples drop down
 			document.addEventListener("DOMContentLoaded", () => {
