@@ -218,6 +218,30 @@ class TestParse(unittest.TestCase):
 
 		self.assertEqual(expected_tree, returned_tree)
 
+	def test_schema_to_node_indentation_empty_line_pass(self):
+		schema =  'Assets/\n'
+		schema += '  *.txt\n'
+		schema += '  Textures/\n'
+		schema += '    *.png\n'
+		schema += '\n'
+		schema += '    *.jpg\n'
+		
+		returned_tree = Parser().schema_to_node_tree(schema)
+
+		expected_tree = DirPathNode(name='schema_root') \
+			.add_child(DirPathNode(name='Assets')
+				.add_child(FilePathNode(name='*.txt'))
+				.add_child(DirPathNode(name='Textures')
+					.add_child(FilePathNode(name='*.png'))
+					.add_child(FilePathNode(name='*.jpg'))
+				)
+			)
+
+		print_node_tree(expected_tree)
+		print_node_tree(returned_tree)
+
+		self.assertEqual(expected_tree, returned_tree)
+
 	def test_schema_to_node_inconsistent_indentation_one_fail(self):
 		"""Uses 4 spaces instead of 2"""
 		schema =  'Assets/\n'

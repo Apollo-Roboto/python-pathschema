@@ -67,13 +67,6 @@ class Parser():
 		last_indentation = 0
 
 		for line_num, line in enumerate(schema.split('\n')):
-			indentation = self._indentation_count(line, line_num+1)
-
-			if indentation > last_indentation + 1:
-				raise SchemaError('Inconsistent indentation.', line_num+1)
-
-			last_indentation = indentation
-			
 			name = line.strip()
 			if len(name) == 0:
 				continue
@@ -81,6 +74,13 @@ class Parser():
 			# comments get ignored
 			if name.startswith(self.comment_token):
 				continue
+
+			indentation = self._indentation_count(line, line_num+1)
+
+			if indentation > last_indentation + 1:
+				raise SchemaError('Inconsistent indentation.', line_num+1)
+
+			last_indentation = indentation
 
 			# add node
 			if indentation == node_depth:
