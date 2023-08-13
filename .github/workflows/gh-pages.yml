@@ -2,9 +2,12 @@ name: Update GitHub Pages
 
 on:
   push:
-    branches: ['main']
-    paths: ['./web']
+    branches:
+      - main
+    paths:
+      - ./web
 
+  # temporary to test the live site
   pull_request:
 
 jobs:
