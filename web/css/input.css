@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::selection {
+	@apply bg-slate-300;
+}
+
+#tutorial-area h1 {
+	@apply text-4xl font-normal text-slate-900 mb-3 mt-9;
+}
+
+#tutorial-area h2 {
+	@apply text-3xl font-normal text-slate-900 mb-2 mt-9;
+}
+
+#tutorial-area h3 {
+	@apply text-2xl font-semibold text-slate-900 mb-2 mt-9;
+}
+
+#tutorial-area h4 {
+	@apply text-xl font-semibold text-slate-900 mb-1 mt-7;
+}
+
+#tutorial-area p {
+	@apply text-slate-600
+}
+
+#tutorial-area pre {
+	@apply bg-slate-600 text-slate-100 rounded-lg p-3 overflow-auto scrollbar-thin my-2
+}
+
+#tutorial-area code {
+	@apply bg-slate-200 rounded-md px-1
+}
+
+
+pre,
+.font-mono {
+	font-variant-ligatures: none; 
+}
+
+button,
+.btn {
+	@apply text-slate-900 hover:shadow-md shadow-black transition-colors text-center;
+}
+
+.grid-decoration {
+	background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 255, 255, 0)), url(../static/footer-texture.svg);
+	background-position: center;
+}
