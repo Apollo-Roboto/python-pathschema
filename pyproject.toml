@@ -3,27 +3,33 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "file-system-schema"
-version = "0.0.1"
+name = "pathschema"
+version = "0.2.1"
 authors = [
   { name="Apollo-Roboto", email="Apollo_Roboto@outlook.com" },
 ]
-description  = ""
+description  = "Standardize and plan out a file structure!"
 readme = "README.md"
 license = "MIT"
-keywords = []
+keywords = ["Validation", "Schema", "File System", "File", "Directory", "Folder"]
 dependencies = [
-	"PyYAML",
-	"python-dotenv",
-	"jsonschema",
-	"requests",
+	"colorama==0.4.6",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 classifiers = [
 	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
 	"License :: OSI Approved :: MIT License",
 	"Operating System :: OS Independent",
+	"Natural Language :: English",
+	"Typing :: Typed",
+	"Topic :: Software Development :: Libraries",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Topic :: System :: Filesystems",
+	"Topic :: Utilities",
 ]
 
 [project.urls]
-"Source" = "https://github.com/"
+"Source" = "https://github.com/Apollo-Roboto/python-pathschema"

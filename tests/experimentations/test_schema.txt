@@ -40,4 +40,7 @@ Assets/
 		*/
 			*.unity
 	Notes.md
-README.md
+
+# should always have a readme
++README.md
+

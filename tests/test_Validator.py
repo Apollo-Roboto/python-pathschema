@@ -1,29 +1,32 @@
 import unittest
-from fss.validator import Validator
+from pathschema.validator import Validator
 import tempfile
 import uuid
 from pathlib import Path
 import os
 import shutil
-from fss.fss import ValidationResult
+from pathschema.models import ValidationResult
 
 class TestValidator(unittest.TestCase):
 
 	@classmethod
 	def tearDownClass(cls):
+
+		# remove the temporary test directory
 		shutil.rmtree(Path(
 			tempfile.gettempdir(),
-			'python_test',
+			'pathschema_test',
 		))
 
 	@classmethod
-	def _temp_dir(cls):
+	def _temp_dir(cls) -> Path:
+		"""Get a temporary directory"""
 		return Path(
 			tempfile.gettempdir(),
-			'python_test',
+			'pathschema_test',
 			str(uuid.uuid4())
 		)
-	
+
 	def setUp(self) -> None:
 		"""Adds a little newline to read the output better"""
 		print()
@@ -44,7 +47,7 @@ class TestValidator(unittest.TestCase):
 		temp_file = Path(self._temp_dir(), 'test.txt')
 
 		os.makedirs(temp_file.parent)
-		with open(temp_file, 'w') as f: pass
+		temp_file.touch()
 
 		with self.assertRaises(ValueError) as e:
 			Validator().validate(temp_file, schema='')
@@ -72,15 +75,15 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_only_simple_pass(self):
 		schema =  'Assets/\n'
-		schema += '\tGlobals/\n'
-		schema += '\t\tMaterials/\n'
-		schema += '\t\tTextures/\n'
-		schema += '\t\tModels/\n'
-		schema += '\t\tScripts/\n'
-		schema += '\t\tAnimations/\n'
-		schema += '\tPrefabs/\n'
-		schema += '\tCommunityAssets/\n'
-		schema += '\tScenes/\n'
+		schema += '  Globals/\n'
+		schema += '    Materials/\n'
+		schema += '    Textures/\n'
+		schema += '    Models/\n'
+		schema += '    Scripts/\n'
+		schema += '    Animations/\n'
+		schema += '  Prefabs/\n'
+		schema += '  CommunityAssets/\n'
+		schema += '  Scenes/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -100,15 +103,15 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_only_simple_fail(self):
 		schema =  'Assets/\n'
-		schema += '\tGlobals/\n'
-		schema += '\t\tMaterials/\n'
-		schema += '\t\tTextures/\n'
-		schema += '\t\tModels/\n'
-		schema += '\t\tScripts/\n'
-		schema += '\t\tAnimations/\n'
-		schema += '\tPrefabs/\n'
-		schema += '\tCommunityAssets/\n'
-		schema += '\tScenes/\n'
+		schema += '  Globals/\n'
+		schema += '    Materials/\n'
+		schema += '    Textures/\n'
+		schema += '    Models/\n'
+		schema += '    Scripts/\n'
+		schema += '    Animations/\n'
+		schema += '  Prefabs/\n'
+		schema += '  CommunityAssets/\n'
+		schema += '  Scenes/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -128,38 +131,38 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_dir_and_files_simple_pass(self):
 		schema =  'Textures/\n'
-		schema += '\trobot.png\n'
+		schema += '  robot.png\n'
 		schema += 'Models/\n'
-		schema += '\trobot.fbx\n'
+		schema += '  robot.fbx\n'
 
 		dir_to_validate = self._temp_dir()
 
 		texture_dir = dir_to_validate.joinpath('Textures')
 		os.makedirs(texture_dir)
-		with open(texture_dir / 'robot.png', 'w') as f: pass
+		(texture_dir / 'robot.png').touch()
 
 		models_dir = dir_to_validate.joinpath('Models')
 		os.makedirs(models_dir)
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(models_dir / 'robot.fbx').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_dir_and_files_simple_fail(self):
 		schema =  'Textures/\n'
-		schema += '\trobot.png\n'
+		schema += '  robot.png\n'
 		schema += 'Models/\n'
-		schema += '\trobot.fbx\n'
+		schema += '  robot.fbx\n'
 
 		dir_to_validate = self._temp_dir()
 
 		texture_dir = dir_to_validate.joinpath('Textures')
 		os.makedirs(texture_dir)
-		with open(texture_dir / 'robot.png', 'w') as f: pass
+		(texture_dir / 'robot.png').touch()
 
 		models_dir = dir_to_validate.joinpath('Models')
 		os.makedirs(models_dir)
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(models_dir / 'robot.fbx').touch()
 
 		os.makedirs(texture_dir / 'invalid_dir')
 
@@ -168,46 +171,46 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_star_file_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t*\n'
+		schema += '  *\n'
 
 		dir_to_validate = self._temp_dir()
 
 		note_dir = dir_to_validate.joinpath('Notes')
 		os.makedirs(note_dir)
-		with open(note_dir / 'robot.md', 'w') as f: pass
+		(note_dir / 'robot.md').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_regex_file_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t".*\\.md"\n'
+		schema += '  ".*\\.md"\n'
 
 		dir_to_validate = self._temp_dir()
 
 		note_dir = dir_to_validate.joinpath('Notes')
 		os.makedirs(note_dir)
-		with open(note_dir / 'robot.md', 'w') as f: pass
+		(note_dir / 'robot.md').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_regex_file_fail(self):
 		schema =  'Notes/\n'
-		schema += '\t".*\\.md"\n'
+		schema += '  ".*\\.md"\n'
 
 		dir_to_validate = self._temp_dir()
 
 		note_dir = dir_to_validate.joinpath('Notes')
 		os.makedirs(note_dir)
-		with open(note_dir / 'robot.txt', 'w') as f: pass
+		(note_dir / 'robot.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_star_dir_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t*/\n'
+		schema += '  */\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -219,7 +222,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_regex_dir_pass(self):
 		schema =  'Notes/\n'
-		schema += '\t"\\d+"/\n'
+		schema += '  "\\d+"/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -231,7 +234,7 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_regex_dir_fail(self):
 		schema =  'Notes/\n'
-		schema += '\t"\\d"/\n'
+		schema += '  "\\d"/\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -243,11 +246,11 @@ class TestValidator(unittest.TestCase):
 
 	def test_validate_star_and_dir_pass(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t".*\\.png"\n'
-		schema += '\tModels/\n'
-		schema += '\t\t".*\\.fbx"\n'
-		schema += '\t*\n'
+		schema += '  Textures/\n'
+		schema += '    ".*\\.png"\n'
+		schema += '  Models/\n'
+		schema += '    ".*\\.fbx"\n'
+		schema += '  *\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -258,19 +261,19 @@ class TestValidator(unittest.TestCase):
 		models_dir = assets_dir / 'Models'
 		os.makedirs(models_dir)
 
-		with open(textures_dir / 'robot.png', 'w') as f: pass
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(textures_dir / 'robot.png').touch()
+		(models_dir / 'robot.fbx').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_star_and_dir_fail(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t".*\\.png"\n'
-		schema += '\tModels/\n'
-		schema += '\t\t".*\\.fbx"\n'
-		schema += '\t*\n'
+		schema += '  Textures/\n'
+		schema += '    ".*\\.png"\n'
+		schema += '  Models/\n'
+		schema += '    ".*\\.fbx"\n'
+		schema += '  *\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -281,15 +284,15 @@ class TestValidator(unittest.TestCase):
 		models_dir = assets_dir / 'Models'
 		os.makedirs(models_dir)
 
-		with open(textures_dir / 'robot.jpg', 'w') as f: pass
-		with open(models_dir / 'robot.obj', 'w') as f: pass
+		(textures_dir / 'robot.jpg').touch()
+		(models_dir / 'robot.obj').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_any_pass(self):
 		schema =  'Assets/\n'
-		schema += '\t...\n'
+		schema += '  ...\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -300,16 +303,16 @@ class TestValidator(unittest.TestCase):
 		models_dir = assets_dir / 'Models'
 		os.makedirs(models_dir)
 
-		with open(textures_dir / 'robot.png', 'w') as f: pass
-		with open(models_dir / 'robot.fbx', 'w') as f: pass
+		(textures_dir / 'robot.png').touch()
+		(models_dir / 'robot.fbx').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_pattern_star_pass(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t*.png\n'
+		schema += '  Textures/\n'
+		schema += '    *.png\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -318,16 +321,16 @@ class TestValidator(unittest.TestCase):
 		textures_dir = assets_dir / 'Textures'
 		os.makedirs(textures_dir)
 
-		with open(textures_dir / 'robot.png', 'w') as f: pass
-		with open(textures_dir / 'planet.png', 'w') as f: pass
+		(textures_dir / 'robot.png').touch()
+		(textures_dir / 'planet.png').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_pattern_star_fail(self):
 		schema =  'Assets/\n'
-		schema += '\tTextures/\n'
-		schema += '\t\t*.png\n'
+		schema += '  Textures/\n'
+		schema += '    *.png\n'
 
 		dir_to_validate = self._temp_dir()
 
@@ -336,160 +339,160 @@ class TestValidator(unittest.TestCase):
 		textures_dir = assets_dir / 'Textures'
 		os.makedirs(textures_dir)
 
-		with open(textures_dir / 'robot.jpg', 'w') as f: pass
-		with open(textures_dir / 'planet.jpeg', 'w') as f: pass
+		(textures_dir / 'robot.jpg').touch()
+		(textures_dir / 'planet.jpeg').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_pattern_question_mark_pass(self):
 		schema =  'Folder/\n'
-		schema += '\tFile_?.txt\n'
+		schema += '  File_?.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File_0.txt', 'w') as f: pass
-		with open(folder_dir / 'File_1.txt', 'w') as f: pass
-		with open(folder_dir / 'File_2.txt', 'w') as f: pass
-		with open(folder_dir / 'File_A.txt', 'w') as f: pass
-		with open(folder_dir / 'File_B.txt', 'w') as f: pass
-		with open(folder_dir / 'File_C.txt', 'w') as f: pass
+		(folder_dir / 'File_0.txt').touch()
+		(folder_dir / 'File_1.txt').touch()
+		(folder_dir / 'File_2.txt').touch()
+		(folder_dir / 'File_A.txt').touch()
+		(folder_dir / 'File_B.txt').touch()
+		(folder_dir / 'File_C.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_pattern_question_mark_fail(self):
 		schema =  'Folder/\n'
-		schema += '\tFile_?.txt\n'
+		schema += '  File_?.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'Fails_00.txt', 'w') as f: pass
+		(folder_dir / 'Fails_00.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_forbiden_pass(self):
 		schema =  'Folder/\n'
-		schema += '\t-File.txt\n'
-		schema += '\tAnAcceptableFile.txt\n'
+		schema += '  -File.txt\n'
+		schema += '  AnAcceptableFile.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'AnAcceptableFile.txt', 'w') as f: pass
+		(folder_dir / 'AnAcceptableFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_forbiden_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t-File.txt\n'
+		schema += '  -File.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_forbiden_with_start_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t-File.txt\n'
-		schema += '\t*.txt\n'
+		schema += '  -File.txt\n'
+		schema += '  *.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_forbiden_with_start2_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t*.txt\n'
-		schema += '\t-File.txt\n'
+		schema += '  *.txt\n'
+		schema += '  -File.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_required_pass(self):
 		schema =  'Folder/\n'
-		schema += '\t+File.txt\n'
-		schema += '\tSomeOtherFile.txt\n'
+		schema += '  +File.txt\n'
+		schema += '  SomeOtherFile.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'File.txt', 'w') as f: pass
+		(folder_dir / 'File.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_no_errors(result)
 
 	def test_validate_required_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t+File.txt\n'
-		schema += '\tSomeOtherFile.txt\n'
+		schema += '  +File.txt\n'
+		schema += '  SomeOtherFile.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+		(folder_dir / 'SomeOtherFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_required_with_start_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t+File.txt\n'
-		schema += '\t*.txt\n'
+		schema += '  +File.txt\n'
+		schema += '  *.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+		(folder_dir / 'SomeOtherFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
 
 	def test_validate_required_with_start2_fail(self):
 		schema =  'Folder/\n'
-		schema += '\t*.txt\n'
-		schema += '\t+File.txt\n'
+		schema += '  *.txt\n'
+		schema += '  +File.txt\n'
 
 		dir_to_validate = self._temp_dir()
 
 		folder_dir = dir_to_validate / 'Folder'
 		os.makedirs(folder_dir)
 
-		with open(folder_dir / 'SomeOtherFile.txt', 'w') as f: pass
+		(folder_dir / 'SomeOtherFile.txt').touch()
 
 		result = Validator().validate(dir_to_validate, schema)
 		self.assert_validation_result_has_errors(result)
