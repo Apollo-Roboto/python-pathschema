@@ -3,12 +3,12 @@ name: Build and Test
 on:
   push:
     branches:
-      - 'main'
+      - main
     paths-ignore:
       - ./web
   pull_request:
     branches:
-      - 'main'
+      - main
     paths-ignore:
       - ./web
 
